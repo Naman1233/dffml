@@ -74,9 +74,7 @@ class TestDNN(AsyncTestCase):
             )
             for i in range(0, _n_data)
         ]
-        cls.sources = Sources(
-            MemorySource(MemorySourceConfig(records=cls.records))
-        )
+        cls.sources = Sources(MemorySource(MemorySourceConfig(records=cls.records)))
 
     @classmethod
     def tearDownClass(cls):
@@ -95,8 +93,7 @@ class TestDNN(AsyncTestCase):
             )
         )
         self.assertEqual(
-            config.directory,
-            pathlib.Path("~", ".cache", "dffml", "tensorflow"),
+            config.directory, pathlib.Path("~", ".cache", "dffml", "tensorflow"),
         )
         self.assertEqual(config.steps, 3000)
         self.assertEqual(config.epochs, 30)
@@ -140,8 +137,7 @@ class TestDNN(AsyncTestCase):
                 self.assertEqual(len(res), 1)
             self.assertEqual(res[0].key, a.key)
             test_error_norm = abs(
-                (test_target - res[0].prediction(target_name).value)
-                / test_target
+                (test_target - res[0].prediction(target_name).value) / test_target
                 + 1e-6
             )
             error_threshold = 0.3

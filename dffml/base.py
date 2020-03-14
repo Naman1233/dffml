@@ -180,9 +180,7 @@ def convert_value(arg, value):
 
 def is_config_dict(value):
     return bool(
-        "arg" in value
-        and "config" in value
-        and isinstance(value["config"], dict)
+        "arg" in value and "config" in value and isinstance(value["config"], dict)
     )
 
 
@@ -252,9 +250,7 @@ def make_config(cls_name: str, fields, *args, namespace=None, **kwargs):
     namespace.setdefault("_fromdict", classmethod(_fromdict))
     namespace.setdefault(
         "_replace",
-        lambda self, *args, **kwargs: dataclasses.replace(
-            self, *args, **kwargs
-        ),
+        lambda self, *args, **kwargs: dataclasses.replace(self, *args, **kwargs),
     )
     namespace.setdefault("_asdict", config_asdict)
     kwargs["eq"] = True
@@ -291,9 +287,7 @@ class ConfigAndKWArgsMutuallyExclusive(Exception):
 class BaseConfigurableMetaClass(type, abc.ABC):
     def __new__(cls, name, bases, props, module=None):
         # Create the class
-        cls = super(BaseConfigurableMetaClass, cls).__new__(
-            cls, name, bases, props
-        )
+        cls = super(BaseConfigurableMetaClass, cls).__new__(cls, name, bases, props)
         # Wrap __init__
         setattr(cls, "__init__", cls.wrap(cls.__init__))
         return cls
@@ -351,9 +345,7 @@ class BaseConfigurable(metaclass=BaseConfigurableMetaClass):
 
     @classmethod
     def add_orig_label(cls, *above):
-        return (
-            list(above) + cls.ENTRY_POINT_NAME + [cls.ENTRY_POINT_ORIG_LABEL]
-        )
+        return list(above) + cls.ENTRY_POINT_NAME + [cls.ENTRY_POINT_ORIG_LABEL]
 
     @classmethod
     def add_label(cls, *above):
@@ -361,9 +353,7 @@ class BaseConfigurable(metaclass=BaseConfigurableMetaClass):
 
     @classmethod
     def config_set(cls, args, above, *path) -> BaseConfig:
-        return traverse_config_set(
-            args, *(cls.add_orig_label(*above) + list(path))
-        )
+        return traverse_config_set(args, *(cls.add_orig_label(*above) + list(path)))
 
     @staticmethod
     def parser_helper(value):
@@ -435,11 +425,7 @@ class BaseConfigurable(metaclass=BaseConfigurableMetaClass):
             error.args = (
                 (
                     "%s missing %r from %s"
-                    % (
-                        cls.__qualname__,
-                        label_above[-1],
-                        ".".join(label_above[:-1]),
-                    )
+                    % (cls.__qualname__, label_above[-1], ".".join(label_above[:-1]),)
                 ),
             )
             raise
@@ -470,9 +456,7 @@ class BaseConfigurable(metaclass=BaseConfigurableMetaClass):
         # Build the arguments to the CONFIG class
         kwargs: Dict[str, Any] = {}
         for field in dataclasses.fields(cls.CONFIG):
-            kwargs[field.name] = got = cls.config_get(
-                config, above, field.name
-            )
+            kwargs[field.name] = got = cls.config_get(config, above, field.name)
             if inspect.isclass(got) and issubclass(got, BaseConfigurable):
                 try:
                     kwargs[field.name] = got.withconfig(

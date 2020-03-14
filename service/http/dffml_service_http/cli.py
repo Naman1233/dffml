@@ -67,9 +67,7 @@ class CreateTLSClient(CMD):
         "-bits", help="Number of bits to use for key", default=4096, type=int
     )
     arg_key = Arg("-key", help="Path to client key file", default="client.key")
-    arg_cert = Arg(
-        "-cert", help="Path to client cert file", default="client.pem"
-    )
+    arg_cert = Arg("-cert", help="Path to client cert file", default="client.pem")
     arg_csr = Arg("-csr", help="Path to client csr file", default="client.csr")
     arg_server_key = Arg(
         "-server-key", help="Path to server key file", default="server.key"
@@ -129,10 +127,7 @@ class CreateTLS(TLSCMD):
 class MultiCommCMD(CMD):
 
     arg_mc_config = Arg(
-        "-mc-config",
-        dest="mc_config",
-        default=None,
-        help="MultiComm config directory",
+        "-mc-config", dest="mc_config", default=None, help="MultiComm config directory",
     )
     arg_mc_atomic = Arg(
         "-mc-atomic",
@@ -156,9 +151,7 @@ class Server(TLSCMD, MultiCommCMD, Routes):
     arg_port = Arg("-port", help="Port to bind to", type=int, default=8080)
     arg_addr = Arg("-addr", help="Address to bind to", default="127.0.0.1")
     arg_upload_dir = Arg(
-        "-upload-dir",
-        help="Directory to store uploaded files in",
-        default=None,
+        "-upload-dir", help="Directory to store uploaded files in", default=None,
     )
     arg_static = Arg(
         "-static", help="Directory to serve static content from", default=None
@@ -188,19 +181,14 @@ class Server(TLSCMD, MultiCommCMD, Routes):
 
     async def start(self):
         if self.insecure:
-            self.site = web.TCPSite(
-                self.runner, host=self.addr, port=self.port
-            )
+            self.site = web.TCPSite(self.runner, host=self.addr, port=self.port)
         else:
             ssl_context = ssl.create_default_context(
                 purpose=ssl.Purpose.SERVER_AUTH, cafile=self.cert
             )
             ssl_context.load_cert_chain(self.cert, self.key)
             self.site = web.TCPSite(
-                self.runner,
-                host=self.addr,
-                port=self.port,
-                ssl_context=ssl_context,
+                self.runner, host=self.addr, port=self.port, ssl_context=ssl_context,
             )
         await self.site.start()
         self.port = self.site._server.sockets[0].getsockname()[1]

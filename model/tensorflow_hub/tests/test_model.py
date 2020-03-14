@@ -22,9 +22,7 @@ class TestTextClassificationModel(AsyncTestCase):
             Record(str(i), data={"features": {"A": A[i], "X": X[i]}})
             for i in range(0, len(X))
         ]
-        cls.sources = Sources(
-            MemorySource(MemorySourceConfig(records=cls.records))
-        )
+        cls.sources = Sources(MemorySource(MemorySourceConfig(records=cls.records)))
         cls.model_dir = tempfile.TemporaryDirectory()
         cls.model = TextClassificationModel(
             TextClassifierConfig(
@@ -87,9 +85,7 @@ for example in SENTENCES:
     sentement_classification = WORDS.index(sentement_words)
     DATA.append(
         [
-            example.format(
-                *random.sample(sentement_words, example.count("{}"))
-            ),
+            example.format(*random.sample(sentement_words, example.count("{}"))),
             str(sentement_classification),
         ]
     )

@@ -22,10 +22,7 @@ definitions = [
     Definition(name="valid_git_repository_URL", primitive="boolean"),
     Definition(name="git_branch", primitive="str"),
     Definition(
-        name="git_repository",
-        primitive="Dict[str, str]",
-        lock=True,
-        spec=GitRepoSpec,
+        name="git_repository", primitive="Dict[str, str]", lock=True, spec=GitRepoSpec,
     ),
     Definition(
         name="git_repository_checked_out",
@@ -40,9 +37,7 @@ definitions = [
     Definition(name="author_line_count", primitive="Dict[str, int]"),
     Definition(name="work_spread", primitive="int"),
     Definition(name="release_within_period", primitive="bool"),
-    Definition(
-        name="lines_by_language_count", primitive="Dict[str, Dict[str, int]]"
-    ),
+    Definition(name="lines_by_language_count", primitive="Dict[str, Dict[str, int]]"),
     Definition(name="language_to_comment_ratio", primitive="int"),
     Definition(name="commit_count", primitive="int"),
     Definition(name="author_count", primitive="int"),
@@ -54,9 +49,7 @@ definitions = [
     Definition(name="author_line_count", primitive="Dict[str, int]"),
     Definition(name="work_spread", primitive="int"),
     Definition(name="release_within_period", primitive="bool"),
-    Definition(
-        name="lines_by_language_count", primitive="Dict[str, Dict[str, int]]"
-    ),
+    Definition(name="lines_by_language_count", primitive="Dict[str, Dict[str, int]]"),
     Definition(name="language_to_comment_ratio", primitive="int"),
     Definition(name="commit_count", primitive="int"),
     Definition(name="author_count", primitive="int"),

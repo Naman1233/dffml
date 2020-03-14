@@ -102,9 +102,9 @@ async def clone_git_repo(URL: str):
     conditions=[no_git_branch_given],
 )
 async def git_repo_default_branch(repo: Dict[str, str]):
-    branches = (
-        await check_output("git", "branch", "-r", cwd=repo.directory)
-    ).split("\n")
+    branches = (await check_output("git", "branch", "-r", cwd=repo.directory)).split(
+        "\n"
+    )
     main = [branch for branch in branches if "->" in branch][0].split()[-1]
     main = main.split("/")[-1]
     return {"branch": main}
@@ -127,9 +127,7 @@ async def git_repo_checkout(repo: Dict[str, str], commit: str):
     inputs={"repo": git_repository, "branch": git_branch, "date": date},
     outputs={"commit": git_commit},
 )
-async def git_repo_commit_from_date(
-    repo: Dict[str, str], branch: str, date: str
-):
+async def git_repo_commit_from_date(repo: Dict[str, str], branch: str, date: str):
     sha = (
         await check_output(
             "git",
@@ -160,11 +158,7 @@ async def git_repo_commit_from_date(
 
 
 @op(
-    inputs={
-        "repo": git_repository,
-        "branch": git_branch,
-        "start_end": date_pair,
-    },
+    inputs={"repo": git_repository, "branch": git_branch, "start_end": date_pair,},
     outputs={"author_lines": author_line_count},
 )
 async def git_repo_author_lines_for_dates(
@@ -244,16 +238,10 @@ def git_repo_release_valid_version(tag):
 
 
 @op(
-    inputs={
-        "repo": git_repository,
-        "branch": git_branch,
-        "start_end": date_pair,
-    },
+    inputs={"repo": git_repository, "branch": git_branch, "start_end": date_pair,},
     outputs={"present": release_within_period},
 )
-async def git_repo_release(
-    repo: Dict[str, str], branch: str, start_end: List[str]
-):
+async def git_repo_release(repo: Dict[str, str], branch: str, start_end: List[str]):
     """
     Was there a release within this date range
     """
@@ -328,11 +316,7 @@ async def lines_of_code_by_language(repo: Dict[str, str]):
         if cols:
             header_cols = [word for word in line if not word.isdigit()]
             header = "".join(
-                [
-                    c
-                    for c in "_".join(header_cols).lower()
-                    if c.isalpha() or c == "_"
-                ]
+                [c for c in "_".join(header_cols).lower() if c.isalpha() or c == "_"]
             )
             # Tokei -> cloc compatibility
             if header == "total":
@@ -361,11 +345,7 @@ async def lines_of_code_to_comments(langs: Dict[str, Dict[str, int]]):
 
 
 @op(
-    inputs={
-        "repo": git_repository,
-        "branch": git_branch,
-        "start_end": date_pair,
-    },
+    inputs={"repo": git_repository, "branch": git_branch, "start_end": date_pair,},
     outputs={"commits": commit_count},
 )
 async def git_commits(repo: Dict[str, str], branch: str, start_end: List[str]):
@@ -391,8 +371,7 @@ async def git_commits(repo: Dict[str, str], branch: str, start_end: List[str]):
 
 
 @op(
-    inputs={"author_lines": author_line_count},
-    outputs={"authors": author_count},
+    inputs={"author_lines": author_line_count}, outputs={"authors": author_count},
 )
 async def count_authors(author_lines: dict):
     return {"authors": len(author_lines.keys())}

@@ -196,9 +196,7 @@ def DefFeature(name, dtype, length):
 
         LOGGER = LOGGER.getChild("DefFeature")
 
-        def __init__(
-            self, name: str = "", dtype: Type = int, length: int = 1
-        ) -> None:
+        def __init__(self, name: str = "", dtype: Type = int, length: int = 1) -> None:
             super().__init__()
             self.NAME = name
             self._dtype = dtype
@@ -243,10 +241,7 @@ class Features(collections.UserList):
         for name, feature_def in kwargs.items():
             feature_def.setdefault("name", name)
         return cls(
-            *[
-                Feature._fromdict(**feature_data)
-                for feature_data in kwargs.values()
-            ]
+            *[Feature._fromdict(**feature_data) for feature_data in kwargs.values()]
         )
 
     async def __aenter__(self):

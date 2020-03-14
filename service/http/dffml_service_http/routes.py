@@ -78,13 +78,9 @@ def mcctx_route(handler):
 
     @wraps(handler)
     async def get_mcctx(self, request):
-        mcctx = request.app["multicomm_contexts"].get(
-            request.match_info["label"], None
-        )
+        mcctx = request.app["multicomm_contexts"].get(request.match_info["label"], None)
         if mcctx is None:
-            return web.json_response(
-                MULTICOMM_NOT_LOADED, status=HTTPStatus.NOT_FOUND
-            )
+            return web.json_response(MULTICOMM_NOT_LOADED, status=HTTPStatus.NOT_FOUND)
         return await handler(self, request, mcctx)
 
     return get_mcctx
@@ -98,13 +94,9 @@ def sctx_route(handler):
 
     @wraps(handler)
     async def get_sctx(self, request):
-        sctx = request.app["source_contexts"].get(
-            request.match_info["label"], None
-        )
+        sctx = request.app["source_contexts"].get(request.match_info["label"], None)
         if sctx is None:
-            return web.json_response(
-                SOURCE_NOT_LOADED, status=HTTPStatus.NOT_FOUND
-            )
+            return web.json_response(SOURCE_NOT_LOADED, status=HTTPStatus.NOT_FOUND)
         return await handler(self, request, sctx)
 
     return get_sctx
@@ -118,13 +110,9 @@ def mctx_route(handler):
 
     @wraps(handler)
     async def get_mctx(self, request):
-        mctx = request.app["model_contexts"].get(
-            request.match_info["label"], None
-        )
+        mctx = request.app["model_contexts"].get(request.match_info["label"], None)
         if mctx is None:
-            return web.json_response(
-                MODEL_NOT_LOADED, status=HTTPStatus.NOT_FOUND
-            )
+            return web.json_response(MODEL_NOT_LOADED, status=HTTPStatus.NOT_FOUND)
         return await handler(self, request, mctx)
 
     return get_mctx
@@ -161,10 +149,7 @@ class Routes(BaseMultiCommContext):
             # has definition and value properties
             for ctx, client_inputs in (await request.json()).items():
                 for input_data in client_inputs:
-                    if (
-                        not input_data["definition"]
-                        in config.dataflow.definitions
-                    ):
+                    if not input_data["definition"] in config.dataflow.definitions:
                         return web.json_response(
                             {
                                 "error": f"Missing definition for {input_data['definition']} in dataflow"
@@ -192,9 +177,7 @@ class Routes(BaseMultiCommContext):
         async with MemoryOrchestrator.basic_config() as orchestrator:
             # TODO(dfass) Create octx on dataflow registration
             async with orchestrator(config.dataflow) as octx:
-                results = {
-                    str(ctx): result async for ctx, result in octx.run(*inputs)
-                }
+                results = {str(ctx): result async for ctx, result in octx.run(*inputs)}
                 # TODO Implement input and presentation stages?
                 """
                 if config.presentation == "blob":
@@ -207,9 +190,7 @@ class Routes(BaseMultiCommContext):
 
     async def multicomm_dataflow_asynchronous(self, config, request):
         # TODO allow list of valid definitions to seed
-        raise NotImplementedError(
-            "asynchronous data flows not yet implemented"
-        )
+        raise NotImplementedError("asynchronous data flows not yet implemented")
         if (
             headers.get("connection", "").lower() == "upgrade"
             and headers.get("upgrade", "").lower() == "websocket"
@@ -230,8 +211,7 @@ class Routes(BaseMultiCommContext):
         else:
             # TODO http/2
             return web.json_response(
-                {"error": f"Must use websockets"},
-                status=HTTPStatus.UPGRADE_REQUIRED,
+                {"error": f"Must use websockets"}, status=HTTPStatus.UPGRADE_REQUIRED,
             )
 
     @web.middleware
@@ -253,9 +233,7 @@ class Routes(BaseMultiCommContext):
             return web.json_response(response, status=error.status)
         except Exception as error:  #  pragma: no cov
             self.logger.error(
-                "ERROR handling %s: %s",
-                request,
-                traceback.format_exc().strip(),
+                "ERROR handling %s: %s", request, traceback.format_exc().strip(),
             )
             return web.json_response(
                 {"error": "Internal Server Error"},
@@ -276,8 +254,7 @@ class Routes(BaseMultiCommContext):
 
         if not filepath.startswith(os.path.abspath(self.upload_dir)):
             return web.json_response(
-                {"error": "Attempted path traversal"},
-                status=HTTPStatus.BAD_REQUEST,
+                {"error": "Attempted path traversal"}, status=HTTPStatus.BAD_REQUEST,
             )
 
         reader = await request.multipart()
@@ -285,8 +262,7 @@ class Routes(BaseMultiCommContext):
         field = await reader.next()
         if field.name != "file":
             return web.json_response(
-                {"error": "Missing 'file' field"},
-                status=HTTPStatus.BAD_REQUEST,
+                {"error": "Missing 'file' field"}, status=HTTPStatus.BAD_REQUEST,
             )
 
         # Can't rely on Content-Length if transfer is chunked.
@@ -313,9 +289,7 @@ class Routes(BaseMultiCommContext):
 
         for filepath in pathlib.Path(self.upload_dir).rglob("**/*.*"):
             filename = str(filepath).replace(self.upload_dir + "/", "")
-            files.append(
-                {"filename": filename, "size": filepath.stat().st_size}
-            )
+            files.append({"filename": filename, "size": filepath.stat().st_size})
 
         return web.json_response(files)
 
@@ -337,9 +311,7 @@ class Routes(BaseMultiCommContext):
         try:
             source = BaseSource.load_labeled(f"{label}={source_name}")
         except EntrypointNotFound as error:
-            self.logger.error(
-                f"/configure/source/ failed to load source: {error}"
-            )
+            self.logger.error(f"/configure/source/ failed to load source: {error}")
             return web.json_response(
                 {"error": f"source {source_name} not found"},
                 status=HTTPStatus.NOT_FOUND,
@@ -348,9 +320,7 @@ class Routes(BaseMultiCommContext):
         try:
             source = source.withconfig(config)
         except MissingConfig as error:
-            self.logger.error(
-                f"failed to configure source {source_name}: {error}"
-            )
+            self.logger.error(f"failed to configure source {source_name}: {error}")
             return web.json_response(
                 {"error": str(error)}, status=HTTPStatus.BAD_REQUEST
             )
@@ -368,8 +338,7 @@ class Routes(BaseMultiCommContext):
 
         if not label in request.app["sources"]:
             return web.json_response(
-                {"error": f"{label} source not found"},
-                status=HTTPStatus.NOT_FOUND,
+                {"error": f"{label} source not found"}, status=HTTPStatus.NOT_FOUND,
             )
 
         # Enter the source context and pass the features
@@ -382,10 +351,7 @@ class Routes(BaseMultiCommContext):
 
     async def list_models(self, request):
         return web.json_response(
-            {
-                model.ENTRY_POINT_ORIG_LABEL: model.args({})
-                for model in Model.load()
-            },
+            {model.ENTRY_POINT_ORIG_LABEL: model.args({}) for model in Model.load()},
             dumps=partial(json.dumps, cls=JSONEncoder),
         )
 
@@ -398,20 +364,15 @@ class Routes(BaseMultiCommContext):
         try:
             model = Model.load_labeled(f"{label}={model_name}")
         except EntrypointNotFound as error:
-            self.logger.error(
-                f"/configure/model/ failed to load model: {error}"
-            )
+            self.logger.error(f"/configure/model/ failed to load model: {error}")
             return web.json_response(
-                {"error": f"model {model_name} not found"},
-                status=HTTPStatus.NOT_FOUND,
+                {"error": f"model {model_name} not found"}, status=HTTPStatus.NOT_FOUND,
             )
 
         try:
             model = model.withconfig(config)
         except MissingConfig as error:
-            self.logger.error(
-                f"failed to configure model {model_name}: {error}"
-            )
+            self.logger.error(f"failed to configure model {model_name}: {error}")
             return web.json_response(
                 {"error": str(error)}, status=HTTPStatus.BAD_REQUEST
             )
@@ -429,8 +390,7 @@ class Routes(BaseMultiCommContext):
 
         if not label in request.app["models"]:
             return web.json_response(
-                {"error": f"{label} model not found"},
-                status=HTTPStatus.NOT_FOUND,
+                {"error": f"{label} model not found"}, status=HTTPStatus.NOT_FOUND,
             )
 
         # Enter the model context and pass the features
@@ -481,9 +441,7 @@ class Routes(BaseMultiCommContext):
 
     @sctx_route
     async def source_update(self, request, sctx):
-        await sctx.update(
-            Record(request.match_info["key"], data=await request.json())
-        )
+        await sctx.update(Record(request.match_info["key"], data=await request.json()))
         return web.json_response(OK)
 
     async def _iter_records(self, iterkey, chunk_size) -> List[Record]:
@@ -539,8 +497,7 @@ class Routes(BaseMultiCommContext):
     @sctx_route
     async def source_records_iter(self, request, sctx):
         iterkey, records = await self._iter_records(
-            request.match_info["iterkey"],
-            int(request.match_info["chunk_size"]),
+            request.match_info["iterkey"], int(request.match_info["chunk_size"]),
         )
         return web.json_response(
             {
@@ -617,8 +574,7 @@ class Routes(BaseMultiCommContext):
 
     async def api_js(self, request):
         return web.Response(
-            body=API_JS_BYTES,
-            headers={"Content-Type": "application/javascript"},
+            body=API_JS_BYTES, headers={"Content-Type": "application/javascript"},
         )
 
     async def on_shutdown(self, app):
@@ -659,41 +615,17 @@ class Routes(BaseMultiCommContext):
                 ("GET", "/service/files", self.service_files),
                 # DFFML APIs
                 ("GET", "/list/sources", self.list_sources),
-                (
-                    "POST",
-                    "/configure/source/{source}/{label}",
-                    self.configure_source,
-                ),
-                (
-                    "GET",
-                    "/context/source/{label}/{ctx_label}",
-                    self.context_source,
-                ),
+                ("POST", "/configure/source/{source}/{label}", self.configure_source,),
+                ("GET", "/context/source/{label}/{ctx_label}", self.context_source,),
                 ("GET", "/list/models", self.list_models),
-                (
-                    "POST",
-                    "/configure/model/{model}/{label}",
-                    self.configure_model,
-                ),
-                (
-                    "GET",
-                    "/context/model/{label}/{ctx_label}",
-                    self.context_model,
-                ),
+                ("POST", "/configure/model/{model}/{label}", self.configure_model,),
+                ("GET", "/context/model/{label}/{ctx_label}", self.context_model,),
                 # MutliComm APIs (Data Flow)
-                (
-                    "POST",
-                    "/multicomm/{label}/register",
-                    self.multicomm_register,
-                ),
+                ("POST", "/multicomm/{label}/register", self.multicomm_register,),
                 # Source APIs
                 ("GET", "/source/{label}/record/{key}", self.source_record),
                 ("POST", "/source/{label}/update/{key}", self.source_update),
-                (
-                    "GET",
-                    "/source/{label}/records/{chunk_size}",
-                    self.source_records,
-                ),
+                ("GET", "/source/{label}/records/{chunk_size}", self.source_records,),
                 (
                     "GET",
                     "/source/{label}/records/{iterkey}/{chunk_size}",
@@ -704,11 +636,7 @@ class Routes(BaseMultiCommContext):
                 ("POST", "/model/{label}/train", self.model_train),
                 ("POST", "/model/{label}/accuracy", self.model_accuracy),
                 # TODO Provide an iterkey method for model prediction
-                (
-                    "POST",
-                    "/model/{label}/predict/{chunk_size}",
-                    self.model_predict,
-                ),
+                ("POST", "/model/{label}/predict/{chunk_size}", self.model_predict,),
             ]
         )
         # Serve api.js

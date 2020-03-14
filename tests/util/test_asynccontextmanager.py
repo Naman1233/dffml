@@ -17,9 +17,7 @@ class OpenCloseTester(object):
 
 class TestAsyncContextManagerList(AsyncTestCase):
     async def test_open_close_all(self):
-        test_list = AsyncContextManagerList(
-            OpenCloseTester(), OpenCloseTester()
-        )
+        test_list = AsyncContextManagerList(OpenCloseTester(), OpenCloseTester())
         for listel in test_list:
             self.assertFalse(listel.isopen)
         async with test_list:

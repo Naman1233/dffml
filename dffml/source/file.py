@@ -58,9 +58,7 @@ class FileSource(BaseSource):
                 return
             else:
                 raise FileNotFoundError(
-                    errno.ENOENT,
-                    os.strerror(errno.ENOENT),
-                    self.config.filename,
+                    errno.ENOENT, os.strerror(errno.ENOENT), self.config.filename,
                 )
         if self.config.filename[::-1].startswith((".gz")[::-1]):
             opener = gzip.open(self.config.filename, self.READMODE_COMPRESSED)
@@ -80,19 +78,13 @@ class FileSource(BaseSource):
     async def _close(self):
         if self.config.readwrite:
             if self.config.filename[::-1].startswith((".gz")[::-1]):
-                close = gzip.open(
-                    self.config.filename, self.WRITEMODE_COMPRESSED
-                )
+                close = gzip.open(self.config.filename, self.WRITEMODE_COMPRESSED)
             elif self.config.filename[::-1].startswith((".bz2")[::-1]):
-                close = bz2.open(
-                    self.config.filename, self.WRITEMODE_COMPRESSED
-                )
+                close = bz2.open(self.config.filename, self.WRITEMODE_COMPRESSED)
             elif self.config.filename[::-1].startswith(
                 (".xz")[::-1]
             ) or self.config.filename[::-1].startswith((".lzma")[::-1]):
-                close = lzma.open(
-                    self.config.filename, self.WRITEMODE_COMPRESSED
-                )
+                close = lzma.open(self.config.filename, self.WRITEMODE_COMPRESSED)
             elif self.config.filename[::-1].startswith((".zip")[::-1]):
                 close = self.zip_closer_helper()
             else:
@@ -115,9 +107,7 @@ class FileSource(BaseSource):
             self.config.filename, self.WRITEMODE, compression=zipfile.ZIP_BZIP2
         ) as archive:
             with archive.open(
-                self.__class__.__qualname__,
-                mode=self.WRITEMODE,
-                force_zip64=True,
+                self.__class__.__qualname__, mode=self.WRITEMODE, force_zip64=True,
             ) as zip_fd:
                 with io.TextIOWrapper(zip_fd, write_through=True) as fd:
                     yield fd

@@ -20,9 +20,7 @@ def _records_to_sources(*args):
     if args and isinstance(args[0], Sources):
         sources = args[0]
     else:
-        sources = Sources(
-            *[arg for arg in args if isinstance(arg, BaseSource)]
-        )
+        sources = Sources(*[arg for arg in args if isinstance(arg, BaseSource)])
     # Records to add to memory source
     records = []
     # Make args mutable
@@ -89,9 +87,7 @@ async def train(model, *args: Union[BaseSource, Record, Dict[str, Any]]):
             return await mctx.train(sctx)
 
 
-async def accuracy(
-    model, *args: Union[BaseSource, Record, Dict[str, Any]]
-) -> float:
+async def accuracy(model, *args: Union[BaseSource, Record, Dict[str, Any]]) -> float:
     """
     Assess the accuracy of a machine learning model.
 

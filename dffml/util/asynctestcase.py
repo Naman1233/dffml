@@ -58,9 +58,7 @@ class AsyncTestCase(unittest.TestCase):
             """
             logging.basicConfig(
                 level=getattr(
-                    logging,
-                    os.getenv("LOGGING", "CRITICAL").upper(),
-                    logging.CRITICAL,
+                    logging, os.getenv("LOGGING", "CRITICAL").upper(), logging.CRITICAL,
                 )
             )
             result = self.loop.run_until_complete(coro(*args, **kwargs))
@@ -103,9 +101,7 @@ class AsyncExitStackTestCase(AsyncTestCase):
         self._stack.__exit__(None, None, None)
         await self._astack.__aexit__(None, None, None)
 
-    def mktempfile(
-        self, suffix: Optional[str] = None, text: Optional[str] = None
-    ):
+    def mktempfile(self, suffix: Optional[str] = None, text: Optional[str] = None):
         filename = self._stack.enter_context(non_existant_tempfile())
         if suffix:
             filename = filename + suffix

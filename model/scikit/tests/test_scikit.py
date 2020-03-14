@@ -27,9 +27,7 @@ class TestScikitModel:
             cls.features.append(DefFeature("G", float, 1))
             cls.features.append(DefFeature("H", float, 1))
             cls.features.append(DefFeature("I", float, 1))
-            A, B, C, D, E, F, G, H, I, X = list(
-                zip(*FEATURE_DATA_CLASSIFICATION)
-            )
+            A, B, C, D, E, F, G, H, I, X = list(zip(*FEATURE_DATA_CLASSIFICATION))
             cls.records = [
                 Record(
                     str(i),
@@ -58,14 +56,7 @@ class TestScikitModel:
             cls.records = [
                 Record(
                     str(i),
-                    data={
-                        "features": {
-                            "A": A[i],
-                            "B": B[i],
-                            "C": C[i],
-                            "X": X[i],
-                        }
-                    },
+                    data={"features": {"A": A[i], "B": B[i], "C": C[i], "X": X[i],}},
                 )
                 for i in range(0, len(A))
             ]
@@ -91,9 +82,7 @@ class TestScikitModel:
                 for i in range(0, len(A))
             ]
 
-        cls.sources = Sources(
-            MemorySource(MemorySourceConfig(records=cls.records))
-        )
+        cls.sources = Sources(MemorySource(MemorySourceConfig(records=cls.records)))
         properties = {
             "directory": cls.model_dir.name,
             "features": cls.features,
@@ -105,9 +94,7 @@ class TestScikitModel:
         elif estimator_type in unsupervised_estimators:
             if cls.TRUE_CLSTR_PRESENT:
                 config_fields["tcluster"] = DefFeature("X", float, 1)
-        cls.model = cls.MODEL(
-            cls.MODEL_CONFIG(**{**properties, **config_fields})
-        )
+        cls.model = cls.MODEL(cls.MODEL_CONFIG(**{**properties, **config_fields}))
 
     @classmethod
     def tearDownClass(cls):
@@ -137,9 +124,7 @@ class TestScikitModel:
                         self.assertIn(prediction, [2, 4])
                     elif self.MODEL_TYPE is "REGRESSION":
                         correct = FEATURE_DATA_REGRESSION[int(record.key)][3]
-                        self.assertGreater(
-                            prediction, correct - (correct * 0.40)
-                        )
+                        self.assertGreater(prediction, correct - (correct * 0.40))
                         self.assertLess(prediction, correct + (correct * 0.40))
                     elif self.MODEL_TYPE is "CLUSTERING":
                         self.assertIn(prediction, [-1, 0, 1, 2, 3, 4, 5, 6, 7])
@@ -222,9 +207,7 @@ FEATURE_DATA_CLUSTERING = [
     ...
     ]
 """
-data, labels = make_blobs(
-    n_samples=80, centers=8, n_features=4, random_state=2020
-)
+data, labels = make_blobs(n_samples=80, centers=8, n_features=4, random_state=2020)
 FEATURE_DATA_CLUSTERING = np.concatenate((data, labels[:, None]), axis=1)
 CLASSIFIERS = [
     "KNeighborsClassifier",
@@ -309,9 +292,7 @@ for clstr in CLUSTERERS:
             (TestScikitModel, AsyncTestCase),
             {
                 "MODEL_TYPE": "CLUSTERING",
-                "MODEL": getattr(
-                    dffml_model_scikit.scikit_models, clstr + "Model"
-                ),
+                "MODEL": getattr(dffml_model_scikit.scikit_models, clstr + "Model"),
                 "MODEL_CONFIG": getattr(
                     dffml_model_scikit.scikit_models, clstr + "ModelConfig"
                 ),

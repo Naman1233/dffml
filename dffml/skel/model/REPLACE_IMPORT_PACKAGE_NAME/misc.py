@@ -17,15 +17,11 @@ from dffml import (
 
 
 def matrix_subtract(one, two):
-    return [
-        one_element - two_element for one_element, two_element in zip(one, two)
-    ]
+    return [one_element - two_element for one_element, two_element in zip(one, two)]
 
 
 def matrix_multiply(one, two):
-    return [
-        one_element * two_element for one_element, two_element in zip(one, two)
-    ]
+    return [one_element * two_element for one_element, two_element in zip(one, two)]
 
 
 def squared_error(y, line):

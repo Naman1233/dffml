@@ -104,9 +104,6 @@ class TestMySQLDatabase(AsyncTestCase):
             async with db() as db_ctx:
                 await db_ctx.remove(self.table_name, condition)
                 results = [
-                    row
-                    async for row in db_ctx.lookup(
-                        self.table_name, ["firstName"]
-                    )
+                    row async for row in db_ctx.lookup(self.table_name, ["firstName"])
                 ]
                 self.assertEqual(results, [{"firstName": "Bill"}])

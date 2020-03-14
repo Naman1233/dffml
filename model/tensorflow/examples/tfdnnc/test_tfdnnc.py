@@ -33,12 +33,8 @@ class TestExample(unittest.TestCase):
         # Check the Accuracy
         self.assertIn("Accuracy: 0.9", lines[0])
         # Check the classification
-        self.assertEqual(
-            round(ast.literal_eval(lines[1])["classification"]), 1
-        )
-        self.assertEqual(
-            round(ast.literal_eval(lines[2])["classification"]), 2
-        )
+        self.assertEqual(round(ast.literal_eval(lines[1])["classification"]), 1)
+        self.assertEqual(round(ast.literal_eval(lines[2])["classification"]), 2)
 
     def test_python_filenames(self):
         with directory_with_csv_files() as tempdir:
@@ -49,16 +45,10 @@ class TestExample(unittest.TestCase):
             # Run training
             subprocess.check_output(["bash", sh_filepath("train.sh")])
             # Check the Accuracy
-            stdout = subprocess.check_output(
-                ["bash", sh_filepath("accuracy.sh")]
-            )
-            self.assertAlmostEqual(
-                float(stdout.decode().strip()), 0.9, places=0
-            )
+            stdout = subprocess.check_output(["bash", sh_filepath("accuracy.sh")])
+            self.assertAlmostEqual(float(stdout.decode().strip()), 0.9, places=0)
             # Make the prediction
-            stdout = subprocess.check_output(
-                ["bash", sh_filepath("predict.sh")]
-            )
+            stdout = subprocess.check_output(["bash", sh_filepath("predict.sh")])
             records = json.loads(stdout.decode())
             # Check the classification
             self.assertAlmostEqual(

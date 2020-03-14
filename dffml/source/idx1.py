@@ -43,9 +43,7 @@ class IDX1Source(BinaryFileSource, MemorySource):
                 str(i),
                 data={
                     "features": {
-                        self.config.feature: struct.unpack(
-                            ">b", xfile.read(1)
-                        )[0]
+                        self.config.feature: struct.unpack(">b", xfile.read(1))[0]
                     }
                 },
             )

@@ -22,9 +22,7 @@ class MySQLDatabaseConfig:
 class MySQLDatabaseContext(SQLDatabaseContext):
     BIND_DECLARATION: str = "%s"
 
-    async def create_table(
-        self, table_name: str, cols: Dict[str, str]
-    ) -> None:
+    async def create_table(self, table_name: str, cols: Dict[str, str]) -> None:
         query = self.create_table_query(table_name, cols)
         self.logger.debug(query)
         await self.conn.execute(query)
@@ -40,9 +38,7 @@ class MySQLDatabaseContext(SQLDatabaseContext):
         data: Dict[str, Any],
         conditions: Optional[Conditions] = None,
     ) -> None:
-        query, query_values = self.update_query(
-            table_name, data, conditions=conditions
-        )
+        query, query_values = self.update_query(table_name, data, conditions=conditions)
         await self.conn.execute(query, query_values)
 
     async def lookup(
@@ -58,12 +54,8 @@ class MySQLDatabaseContext(SQLDatabaseContext):
         for row in await self.conn.fetchall():
             yield dict(row)
 
-    async def remove(
-        self, table_name: str, conditions: Optional[Conditions] = None
-    ):
-        query, query_values = self.remove_query(
-            table_name, conditions=conditions
-        )
+    async def remove(self, table_name: str, conditions: Optional[Conditions] = None):
+        query, query_values = self.remove_query(table_name, conditions=conditions)
         await self.conn.execute(query, query_values)
 
     async def insert_or_update(self, table_name: str, data: Dict[str, Any]):
@@ -102,9 +94,7 @@ class MySQLDatabase(BaseDatabase):
         # Verify MySQL connection using provided certificate, if given
         ssl_ctx = None
         if self.config.ca is not None:
-            self.logger.debug(
-                f"Secure connection to MySQL: CA file: {self.config.ca}"
-            )
+            self.logger.debug(f"Secure connection to MySQL: CA file: {self.config.ca}")
             ssl_ctx = ssl.create_default_context(cafile=self.config.ca)
         else:
             self.logger.critical("Insecure connection to MySQL")

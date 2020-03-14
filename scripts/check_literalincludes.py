@@ -45,15 +45,10 @@ def main():
         check_changed.setdefault(referenced, {})
         check_changed[referenced].setdefault(contains_literalinclude, False)
     # Get the list of changed files
-    changed_files = subprocess.check_output(
-        ["git", "diff-index", "origin/master"]
-    )
+    changed_files = subprocess.check_output(["git", "diff-index", "origin/master"])
     changed_files = changed_files.decode()
     changed_files = list(
-        map(
-            lambda line: line.split()[-1],
-            filter(bool, changed_files.split("\n")),
-        )
+        map(lambda line: line.split()[-1], filter(bool, changed_files.split("\n")),)
     )
     rm_paths = []
     for filepath in check_changed:

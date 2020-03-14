@@ -21,9 +21,7 @@ package_url = Definition(name="package_url", primitive="str")
     # managers and assign them to self.parent which is an object of type
     # OperationImplementation which will be alive for the lifetime of the
     # Orchestrator which runs all these operations.
-    imp_enter={
-        "session": (lambda self: aiohttp.ClientSession(trust_env=True))
-    },
+    imp_enter={"session": (lambda self: aiohttp.ClientSession(trust_env=True))},
 )
 async def pypi_package_json(self, package: str) -> Dict[str, Any]:
     """
@@ -36,8 +34,7 @@ async def pypi_package_json(self, package: str) -> Dict[str, Any]:
 
 
 @op(
-    inputs={"response_json": package_json},
-    outputs={"version": package_version},
+    inputs={"response_json": package_json}, outputs={"version": package_version},
 )
 async def pypi_latest_package_version(response_json: Dict[str, Any]) -> str:
     """
@@ -63,9 +60,7 @@ async def pypi_package_url(response_json: Dict["str", Any]) -> str:
 @op(
     inputs={"url": package_url},
     outputs={"directory": package_src_dir},
-    imp_enter={
-        "session": (lambda self: aiohttp.ClientSession(trust_env=True))
-    },
+    imp_enter={"session": (lambda self: aiohttp.ClientSession(trust_env=True))},
 )
 async def pypi_package_contents(self, url: str) -> str:
     """

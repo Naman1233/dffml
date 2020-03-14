@@ -70,9 +70,7 @@ class Install(CMD):
                             # The only input to the operations is the package name.
                             Input(
                                 value=package_name,
-                                definition=pypi_package_json.op.inputs[
-                                    "package"
-                                ],
+                                definition=pypi_package_json.op.inputs["package"],
                             )
                         ]
                         for package_name in self.packages
@@ -80,17 +78,12 @@ class Install(CMD):
                 ):
                     # Grab the number of safety issues and the bandit report
                     # from the results dict
-                    safety_issues = results[
-                        safety_check.op.outputs["issues"].name
-                    ]
-                    bandit_report = results[
-                        run_bandit.op.outputs["report"].name
-                    ]
+                    safety_issues = results[safety_check.op.outputs["issues"].name]
+                    bandit_report = results[run_bandit.op.outputs["report"].name]
                     # Decide if those numbers mean we should stop ship or not
                     if (
                         safety_issues > 0
-                        or bandit_report["CONFIDENCE.HIGH_AND_SEVERITY.HIGH"]
-                        > 5
+                        or bandit_report["CONFIDENCE.HIGH_AND_SEVERITY.HIGH"] > 5
                     ):
                         print(f"Do not install {package_name}!")
                         for definition_name, result in results.items():

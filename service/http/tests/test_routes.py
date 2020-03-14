@@ -68,13 +68,9 @@ class FakeModelContext(ModelContext):
             accuracy += int(record.key)
         return Accuracy(accuracy)
 
-    async def predict(
-        self, records: AsyncIterator[Record]
-    ) -> AsyncIterator[Record]:
+    async def predict(self, records: AsyncIterator[Record]) -> AsyncIterator[Record]:
         async for record in records:
-            record.predicted(
-                "Salary", record.feature("by_ten") * 10, float(record.key)
-            )
+            record.predicted("Salary", record.feature("by_ten") * 10, float(record.key))
             yield record
 
 
@@ -166,9 +162,7 @@ class TestRoutesServiceUpload(TestRoutesRunning, AsyncTestCase):
                 "/service/upload/somefile", data={"file": io.BytesIO(contents)}
             ) as r:
                 self.assertEqual(await r.json(), OK)
-                self.assertTrue(
-                    os.path.isfile(os.path.join(tempdir, "somefile"))
-                )
+                self.assertTrue(os.path.isfile(os.path.join(tempdir, "somefile")))
                 with open(os.path.join(tempdir, "somefile"), "rb") as check:
                     self.assertTrue(check.read(), contents)
 
@@ -187,12 +181,9 @@ class TestRoutesServiceUpload(TestRoutesRunning, AsyncTestCase):
     async def test_missing_file_field(self):
         with tempfile.TemporaryDirectory() as tempdir:
             self.cli.upload_dir = tempdir
-            with self.assertRaisesRegex(
-                ServerException, "Missing 'file' field"
-            ):
+            with self.assertRaisesRegex(ServerException, "Missing 'file' field"):
                 async with self.post(
-                    "/service/upload/somefile",
-                    data={"nope": io.BytesIO(b"nope")},
+                    "/service/upload/somefile", data={"nope": io.BytesIO(b"nope")},
                 ) as r:
                     pass  # pramga: no cov
 
@@ -216,10 +207,7 @@ class TestRoutesServiceFiles(TestRoutesRunning, AsyncTestCase):
             for filepath, size in self.FILES.items():
                 pathlib.Path(tempdir, *filepath).write_text("A" * size)
 
-            files = {
-                "/".join(filepath): size
-                for filepath, size in self.FILES.items()
-            }
+            files = {"/".join(filepath): size for filepath, size in self.FILES.items()}
 
             async with self.get("/service/files") as r:
                 response = {r["filename"]: r["size"] for r in await r.json()}
@@ -228,9 +216,7 @@ class TestRoutesServiceFiles(TestRoutesRunning, AsyncTestCase):
                     self.assertEqual(size, response[filepath])
 
     async def test_not_allowed(self):
-        with self.assertRaisesRegex(
-            ServerException, "File listing not allowed"
-        ):
+        with self.assertRaisesRegex(ServerException, "File listing not allowed"):
             async with self.get("/service/files"):
                 pass  # pramga: no cov
 
@@ -252,9 +238,7 @@ class TestRoutesList(TestRoutesRunning, AsyncTestCase):
 
 class TestRoutesConfigure(TestRoutesRunning, AsyncTestCase):
     async def test_source(self):
-        config = parse_unknown(
-            "--source-filename", "dataset.csv", "-source-allowempty"
-        )
+        config = parse_unknown("--source-filename", "dataset.csv", "-source-allowempty")
         async with self.post("/configure/source/csv/salary", json=config) as r:
             self.assertEqual(await r.json(), OK)
             self.assertIn("salary", self.cli.app["sources"])
@@ -280,9 +264,7 @@ class TestRoutesConfigure(TestRoutesRunning, AsyncTestCase):
                 pass  # pramga: no cov
 
     async def test_source_context_source_not_found(self):
-        with self.assertRaisesRegex(
-            ServerException, f"salary source not found"
-        ):
+        with self.assertRaisesRegex(ServerException, f"salary source not found"):
             async with self.get("/context/source/salary/salaryctx") as r:
                 pass  # pramga: no cov
 
@@ -299,9 +281,7 @@ class TestRoutesConfigure(TestRoutesRunning, AsyncTestCase):
                 "--model-predict",
                 "Salary:float:1",
             )
-            async with self.post(
-                "/configure/model/fake/salary", json=config
-            ) as r:
+            async with self.post("/configure/model/fake/salary", json=config) as r:
                 self.assertEqual(await r.json(), OK)
                 self.assertIn("salary", self.cli.app["models"])
                 self.assertEqual(
@@ -317,28 +297,20 @@ class TestRoutesConfigure(TestRoutesRunning, AsyncTestCase):
                 )
                 with self.subTest(context="salaryctx"):
                     # Create the context
-                    async with self.get(
-                        "/context/model/salary/salaryctx"
-                    ) as r:
+                    async with self.get("/context/model/salary/salaryctx") as r:
                         self.assertEqual(await r.json(), OK)
-                        self.assertIn(
-                            "salaryctx", self.cli.app["model_contexts"]
-                        )
+                        self.assertIn("salaryctx", self.cli.app["model_contexts"])
 
     async def test_model_config_error(self):
         # Should be directory, not folder
         config = parse_unknown("--model-directory", "mymodel_dir")
         with patch.object(Model, "load", new=model_load):
             with self.assertRaisesRegex(ServerException, "missing.*features"):
-                async with self.post(
-                    "/configure/model/fake/salary", json=config
-                ):
+                async with self.post("/configure/model/fake/salary", json=config):
                     pass  # pramga: no cov
 
     async def test_model_context_model_not_found(self):
-        with self.assertRaisesRegex(
-            ServerException, f"salary model not found"
-        ):
+        with self.assertRaisesRegex(ServerException, f"salary model not found"):
             async with self.get("/context/model/salary/salaryctx") as r:
                 pass  # pramga: no cov
 
@@ -348,9 +320,7 @@ class TestRoutesConfigure(TestRoutesRunning, AsyncTestCase):
                 with self.assertRaisesRegex(
                     ServerException, f"{check} feed face not found"
                 ):
-                    async with self.post(
-                        f"/configure/{check}/feed face/tag", json={}
-                    ):
+                    async with self.post(f"/configure/{check}/feed face/tag", json={}):
                         pass  # pramga: no cov
 
 
@@ -404,8 +374,7 @@ class TestRoutesMultiComm(TestRoutesRunning, AsyncTestCase):
         # Test the URL now does exist
         async with self.get(url) as response:
             self.assertEqual(
-                {"response": message},
-                list((await response.json()).values())[0],
+                {"response": message}, list((await response.json()).values())[0],
             )
 
     async def test_post(self):
@@ -438,9 +407,7 @@ class TestRoutesMultiComm(TestRoutesRunning, AsyncTestCase):
                 ]
             },
         ) as response:
-            self.assertEqual(
-                {"Feedface": {"response": message}}, await response.json()
-            )
+            self.assertEqual({"Feedface": {"response": message}}, await response.json())
 
 
 class TestRoutesSource(TestRoutesRunning, AsyncTestCase):
@@ -462,9 +429,7 @@ class TestRoutesSource(TestRoutesRunning, AsyncTestCase):
     async def test_record(self):
         for i in range(0, self.num_records):
             async with self.get(f"/source/{self.slabel}/record/{i}") as r:
-                self.assertEqual(
-                    await r.json(), self.source.config.records[i].export()
-                )
+                self.assertEqual(await r.json(), self.source.config.records[i].export())
 
     async def test_update(self):
         key = "1"
@@ -479,15 +444,11 @@ class TestRoutesSource(TestRoutesRunning, AsyncTestCase):
         self.assertIn("iterkey", response)
         self.assertIn("records", response)
         for key, record in response["records"].items():
-            self.assertEqual(
-                record, self.source.config.records[int(key)].export()
-            )
+            self.assertEqual(record, self.source.config.records[int(key)].export())
 
     async def test_records(self):
         chunk_size = self.num_records
-        async with self.get(
-            f"/source/{self.slabel}/records/{chunk_size}"
-        ) as r:
+        async with self.get(f"/source/{self.slabel}/records/{chunk_size}") as r:
             response = await r.json()
             self._check_iter_response(response)
             self.assertEqual(response["iterkey"], None)
@@ -501,9 +462,7 @@ class TestRoutesSource(TestRoutesRunning, AsyncTestCase):
     async def test_records_iterkey(self):
         chunk_size = 7
         got_records = {}
-        async with self.get(
-            f"/source/{self.slabel}/records/{chunk_size}"
-        ) as r:
+        async with self.get(f"/source/{self.slabel}/records/{chunk_size}") as r:
             response = await r.json()
             self._check_iter_response(response)
             iterkey = response["iterkey"]
@@ -560,9 +519,7 @@ class TestModel(TestRoutesRunning, AsyncTestCase):
                 with self.assertRaisesRegex(
                     ServerException, list(MODEL_NO_SOURCES.values())[0]
                 ):
-                    async with self.post(
-                        f"/model/{self.mlabel}/{method}", json=[]
-                    ):
+                    async with self.post(f"/model/{self.mlabel}/{method}", json=[]):
                         pass  # pramga: no cov
 
     async def test_source_not_found(self):
@@ -577,37 +534,29 @@ class TestModel(TestRoutesRunning, AsyncTestCase):
                         pass  # pramga: no cov
 
     async def test_train(self):
-        async with self.post(
-            f"/model/{self.mlabel}/train", json=[self.slabel]
-        ) as r:
+        async with self.post(f"/model/{self.mlabel}/train", json=[self.slabel]) as r:
             self.assertEqual(await r.json(), OK)
         for i in range(0, self.num_records):
             self.assertIn(str(i), self.mctx.trained_on)
 
     async def test_accuracy(self):
-        async with self.post(
-            f"/model/{self.mlabel}/accuracy", json=[self.slabel]
-        ) as r:
+        async with self.post(f"/model/{self.mlabel}/accuracy", json=[self.slabel]) as r:
             self.assertEqual(
-                await r.json(),
-                {"accuracy": float(sum(range(0, self.num_records)))},
+                await r.json(), {"accuracy": float(sum(range(0, self.num_records)))},
             )
 
     async def test_predict(self):
         records: Dict[str, Record] = {
             record.key: record.export() async for record in self.sctx.records()
         }
-        async with self.post(
-            f"/model/{self.mlabel}/predict/0", json=records
-        ) as r:
+        async with self.post(f"/model/{self.mlabel}/predict/0", json=records) as r:
             i: int = 0
             response = await r.json()
             for key, record_data in response["records"].items():
                 record = Record(key, data=record_data)
                 self.assertEqual(int(record.key), i)
                 self.assertEqual(
-                    record.feature("by_ten"),
-                    record.prediction("Salary").value / 10,
+                    record.feature("by_ten"), record.prediction("Salary").value / 10,
                 )
                 self.assertEqual(
                     float(record.key), record.prediction("Salary").confidence
@@ -622,7 +571,5 @@ class TestModel(TestRoutesRunning, AsyncTestCase):
         with self.assertRaisesRegex(
             ServerException, "Multiple request iteration not yet supported"
         ):
-            async with self.post(
-                f"/model/{self.mlabel}/predict/7", json=records
-            ) as r:
+            async with self.post(f"/model/{self.mlabel}/predict/7", json=records) as r:
                 pass  # pramga: no cov

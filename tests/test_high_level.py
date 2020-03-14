@@ -33,9 +33,7 @@ class TestML(IntegrationCLITestCase):
         self.predict_data = [[6, 13, 1.4], [7, 15, 1.6]]
         for use in ["train", "test", "predict"]:
             records = [
-                Record(
-                    i, data={"features": dict(zip(FEATURE_NAMES, features))}
-                )
+                Record(i, data={"features": dict(zip(FEATURE_NAMES, features))})
                 for i, features in enumerate(getattr(self, f"{use}_data"))
             ]
             setattr(self, f"{use}_records", records)
@@ -67,8 +65,6 @@ class TestML(IntegrationCLITestCase):
         # Assess accuracy
         await accuracy(model, test_data)
         # Make prediction
-        predictions = [
-            prediction async for prediction in predict(model, predict_data)
-        ]
+        predictions = [prediction async for prediction in predict(model, predict_data)]
         self.assertEqual(predictions[0][2]["Salary"]["value"], 70)
         self.assertEqual(predictions[1][2]["Salary"]["value"], 80)

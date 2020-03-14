@@ -40,9 +40,7 @@ class SourceTest(abc.ABC):
                     "SepalWidth": 2.7,
                 },
                 "prediction": {
-                    "target_name": RecordPrediction(
-                        value="feedface", confidence=0.42
-                    )
+                    "target_name": RecordPrediction(value="feedface", confidence=0.42)
                 },
             },
         )
@@ -70,26 +68,20 @@ class SourceTest(abc.ABC):
                 with self.subTest(key=full_key):
                     record = await sourceContext.record(full_key)
                     self.assertEqual(
-                        record.data.prediction["target_name"]["value"],
-                        "feedface",
+                        record.data.prediction["target_name"]["value"], "feedface",
                     )
                     self.assertEqual(
-                        record.data.prediction["target_name"]["confidence"],
-                        0.42,
+                        record.data.prediction["target_name"]["confidence"], 0.42,
                     )
                 with self.subTest(key=empty_key):
                     record = await sourceContext.record(empty_key)
                     self.assertEqual(
-                        [
-                            val["value"]
-                            for _, val in record.data.prediction.items()
-                        ],
+                        [val["value"] for _, val in record.data.prediction.items()],
                         ["undetermined"] * (len(record.data.prediction)),
                     )
                 with self.subTest(both=[full_key, empty_key]):
                     records = {
-                        record.key: record
-                        async for record in sourceContext.records()
+                        record.key: record async for record in sourceContext.records()
                     }
                     self.assertIn(full_key, records)
                     self.assertIn(empty_key, records)
@@ -135,12 +127,8 @@ class FileSourceTest(SourceTest):
             tagged.config = tagged.config._replace(tag="sometag")
             async with untagged, tagged:
                 async with untagged() as uctx, tagged() as lctx:
-                    await uctx.update(
-                        Record("0", data={"features": {"feed": 1}})
-                    )
-                    await lctx.update(
-                        Record("0", data={"features": {"face": 2}})
-                    )
+                    await uctx.update(Record("0", data={"features": {"feed": 1}}))
+                    await lctx.update(Record("0", data={"features": {"face": 2}}))
             async with untagged, tagged:
                 async with untagged() as uctx, tagged() as lctx:
                     record = await uctx.record("0")

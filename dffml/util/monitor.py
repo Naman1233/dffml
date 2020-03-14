@@ -65,9 +65,7 @@ class Task(object):
             self.LOGGER.debug(
                 "[%r] adding watcher backlog: %r", self.__key, self.__events
             )
-            self.LOGGER.debug(
-                "[%r] watchers: %r", self.__key, self.__watchdogs
-            )
+            self.LOGGER.debug("[%r] watchers: %r", self.__key, self.__watchdogs)
             async for event, msg in self.get_events():
                 await watchdog.enqueue(event, msg)
 

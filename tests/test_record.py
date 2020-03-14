@@ -9,9 +9,7 @@ class TestRecordPrediction(unittest.TestCase):
     def setUp(self):
         self.value = "good"
         self.confidence = 0.42
-        self.full = RecordPrediction(
-            confidence=self.confidence, value=self.value
-        )
+        self.full = RecordPrediction(confidence=self.confidence, value=self.value)
         self.null = RecordPrediction()
 
     def test_full_property_confidence(self):
@@ -58,8 +56,7 @@ class TestRecord(unittest.TestCase):
         self.full = Record(
             "full",
             data=dict(
-                features=dict(dead="beef"),
-                extra=dict(extra="read all about it"),
+                features=dict(dead="beef"), extra=dict(extra="read all about it"),
             ),
             extra=dict(half=True),
         )
@@ -74,9 +71,7 @@ class TestRecord(unittest.TestCase):
     def test_str(self):
         self.full.prediction = RecordPrediction()
         self.assertIn("Undetermined", str(self.full))
-        self.full.data.prediction = {
-            "Prediction": RecordPrediction(value="Good")
-        }
+        self.full.data.prediction = {"Prediction": RecordPrediction(value="Good")}
         self.assertIn("Good", str(self.full))
         self.full.extra.update(dict(hi=5))
         self.assertIn("5", str(self.full))

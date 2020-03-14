@@ -23,9 +23,7 @@ class TestCachedDownloadServer(httptest.Handler):
         with contextlib.ExitStack() as stack:
             # gzip will add a last modified time by calling time.time, to ensure
             # that the hash is always the same, we set the time to 0
-            stack.enter_context(
-                unittest.mock.patch("time.time", return_value=1)
-            )
+            stack.enter_context(unittest.mock.patch("time.time", return_value=1))
             # Create the bytes objects to build the tarfile in memory
             tar_fileobj = stack.enter_context(io.BytesIO())
             hello_txt_fileobj = stack.enter_context(io.BytesIO(b"world"))
@@ -46,12 +44,8 @@ class TestCachedDownloadServer(httptest.Handler):
 class TestNet(AsyncTestCase):
     def verify_extracted_contents(self, extracted):
         self.assertTrue((extracted / "somedir").is_dir())
-        self.assertEqual(
-            (extracted / "somedir" / "hello.txt").read_text(), "world"
-        )
-        self.assertEqual(
-            (extracted / "somedir" / "dead.bin").read_bytes(), b"\xBE\xEF"
-        )
+        self.assertEqual((extracted / "somedir" / "hello.txt").read_text(), "world")
+        self.assertEqual((extracted / "somedir" / "dead.bin").read_bytes(), b"\xBE\xEF")
 
     @httptest.Server(TestCachedDownloadServer)
     async def test_cached_download(self, ts=httptest.NoServer()):
@@ -75,9 +69,7 @@ class TestNet(AsyncTestCase):
             self.verify_extracted_contents(extracted)
 
     @httptest.Server(TestCachedDownloadServer)
-    async def test_cached_download_unpack_archive(
-        self, ts=httptest.NoServer()
-    ):
+    async def test_cached_download_unpack_archive(self, ts=httptest.NoServer()):
         with tempfile.TemporaryDirectory() as tempdir:
 
             @cached_download_unpack_archive(

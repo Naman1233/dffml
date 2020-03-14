@@ -28,8 +28,7 @@ class AsyncContextManagerListContext(UserList):
         self.parent = parent
         self.__stack = None
         self.logger = LOGGER.getChild(
-            "AsyncContextManagerListContext.%s"
-            % (self.__class__.__qualname__,)
+            "AsyncContextManagerListContext.%s" % (self.__class__.__qualname__,)
         )
 
     async def __aenter__(self):
@@ -116,9 +115,7 @@ async def concurrently(
                     # Update tasks in case work has been updated by called
                     tasks = set(work.keys())
                 else:
-                    logger.debug(
-                        "[%s] Ignoring exception: %s", task, exception
-                    )
+                    logger.debug("[%s] Ignoring exception: %s", task, exception)
     finally:
         for task in tasks:
             if not task.done() and (nocancel is None or task not in nocancel):
@@ -130,9 +127,7 @@ async def concurrently(
 
 
 async def aenter_stack(
-    obj: Any,
-    context_managers: Dict[str, AsyncContextManager],
-    call: bool = True,
+    obj: Any, context_managers: Dict[str, AsyncContextManager], call: bool = True,
 ) -> AsyncExitStack:
     """
     Create a :py:class:`contextlib.AsyncExitStack` then go through each key,
@@ -150,9 +145,7 @@ async def aenter_stack(
             if call:
                 if inspect.isfunction(ctxmanager):
                     ctxmanager = ctxmanager.__get__(obj, obj.__class__)
-                setattr(
-                    obj, key, await stack.enter_async_context(ctxmanager())
-                )
+                setattr(obj, key, await stack.enter_async_context(ctxmanager()))
             else:
                 setattr(obj, key, await stack.enter_async_context(ctxmanager))
     return stack

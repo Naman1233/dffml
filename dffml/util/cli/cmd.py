@@ -19,9 +19,7 @@ DisplayHelp = "Display help message"
 
 class ParseLoggingAction(argparse.Action):
     def __call__(self, parser, namespace, value, option_string=None):
-        setattr(
-            namespace, self.dest, getattr(logging, value.upper(), logging.INFO)
-        )
+        setattr(namespace, self.dest, getattr(logging, value.upper(), logging.INFO))
         logging.basicConfig(level=getattr(namespace, self.dest))
 
 
@@ -66,9 +64,7 @@ class Parser(argparse.ArgumentParser):
                     subparsers = self.add_subparsers()  # pragma: no cover
                 parser = subparsers.add_parser(
                     name,
-                    description=None
-                    if method.__doc__ is None
-                    else method.__doc__,
+                    description=None if method.__doc__ is None else method.__doc__,
                     formatter_class=getattr(
                         method,
                         "CLI_FORMATTER_CLASS",
@@ -101,8 +97,7 @@ class CMD(object):
     def __init__(self, extra_config=None, **kwargs) -> None:
         if not hasattr(self, "logger"):
             self.logger = logging.getLogger(
-                "%s.%s"
-                % (self.__class__.__module__, self.__class__.__qualname__)
+                "%s.%s" % (self.__class__.__module__, self.__class__.__qualname__)
             )
         if extra_config is None:
             extra_config = {}
@@ -133,9 +128,7 @@ class CMD(object):
         parser = Parser(
             description=cls.__doc__,
             formatter_class=getattr(
-                cls,
-                "CLI_FORMATTER_CLASS",
-                argparse.ArgumentDefaultsHelpFormatter,
+                cls, "CLI_FORMATTER_CLASS", argparse.ArgumentDefaultsHelpFormatter,
             ),
         )
         parser.add_subs(cls)
@@ -152,10 +145,7 @@ class CMD(object):
     async def cli(cls, *args):
         parser, (args, unknown) = await cls.parse_args(*args)
         args.extra_config = parse_unknown(*unknown)
-        if (
-            getattr(cls, "run", None) is not None
-            and getattr(args, "cmd", None) is None
-        ):
+        if getattr(cls, "run", None) is not None and getattr(args, "cmd", None) is None:
             args.cmd = cls
         if getattr(args, "cmd", None) is None:
             parser.print_help()

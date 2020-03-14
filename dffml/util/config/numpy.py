@@ -55,9 +55,7 @@ def numpy_doc_to_field(type_str, description, param):
         if "." in type_str:
             type_cls = float
     else:
-        type_split = list(
-            map(lambda x: x.lower(), type_str.replace(",", "").split())
-        )
+        type_split = list(map(lambda x: x.lower(), type_str.replace(",", "").split()))
         for numpy_type_name, python_type in NUMPY_DOCS_TYPE_MAP.items():
             if numpy_type_name in type_split:
                 type_cls = python_type
@@ -121,20 +119,14 @@ def numpy_docstring_args(cls: Callable):
         if param_name in ["args", "kwargs"]:
             continue
         if not param_name in docparams:
-            raise ParameterNotInDocString(
-                f"{param_name} for {cls.__qualname__}"
-            )
-        docparams[param_name] = numpy_doc_to_field(
-            *docparams[param_name], param
-        )
+            raise ParameterNotInDocString(f"{param_name} for {cls.__qualname__}")
+        docparams[param_name] = numpy_doc_to_field(*docparams[param_name], param)
 
     return docparams
 
 
 def make_config_numpy(
-    name: str,
-    cls: Type,
-    properties: Optional[Dict[str, Tuple[Type, field]]] = None,
+    name: str, cls: Type, properties: Optional[Dict[str, Tuple[Type, field]]] = None,
 ):
     """
     Given a numpy class, read its docstring and ``__init__`` parameters to

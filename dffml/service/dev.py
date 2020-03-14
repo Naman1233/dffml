@@ -73,10 +73,7 @@ def create_from_skel(name):
             required=False,
         )
         arg_name = Arg(
-            "-name",
-            help=f"Your name (default: {NAME})",
-            default=NAME,
-            required=False,
+            "-name", help=f"Your name (default: {NAME})", default=NAME, required=False,
         )
         arg_email = Arg(
             "-email",
@@ -254,9 +251,7 @@ class Run(CMD):
 
 class ListEntrypoints(CMD):
 
-    arg_entrypoint = Arg(
-        "entrypoint", help="Entrypoint to list, example: dffml.model"
-    )
+    arg_entrypoint = Arg("entrypoint", help="Entrypoint to list, example: dffml.model")
 
     async def run(self):
         for entrypoint in pkg_resources.iter_entry_points(self.entrypoint):
@@ -292,18 +287,12 @@ class Export(CMD):
                     self.logger.debug("Loaded %s: %s", self.export, obj)
                     if isinstance(obj, DataFlow):
                         sys.stdout.buffer.write(
-                            await loader.dumpb(
-                                obj.export(linked=not self.not_linked)
-                            )
+                            await loader.dumpb(obj.export(linked=not self.not_linked))
                         )
                     elif hasattr(obj, "export"):
-                        sys.stdout.buffer.write(
-                            await loader.dumpb(obj.export())
-                        )
+                        sys.stdout.buffer.write(await loader.dumpb(obj.export()))
                     elif hasattr(obj, "_asdict"):
-                        sys.stdout.buffer.write(
-                            await loader.dumpb(obj._asdict())
-                        )
+                        sys.stdout.buffer.write(await loader.dumpb(obj._asdict()))
 
 
 # TODO (p3) Remove production packages. Download full source if not already
@@ -313,9 +302,7 @@ class Install(CMD):
     Uninstall production packages and install dffml in development mode.
     """
 
-    arg_user = Arg(
-        "-user", "Preform user install", default=False, action="store_true"
-    )
+    arg_user = Arg("-user", "Preform user install", default=False, action="store_true")
 
     async def run(self):
         main_package = is_develop("dffml")
@@ -325,10 +312,7 @@ class Install(CMD):
             )
         # Packages fail to install if we run pip processes in parallel
         packages = list(
-            map(
-                lambda package: Path(*main_package.parts, *package),
-                CORE_PLUGINS,
-            )
+            map(lambda package: Path(*main_package.parts, *package), CORE_PLUGINS,)
         )
         self.logger.info("Installing %r in development mode", packages)
         cmd = [sys.executable, "-m", "pip", "install"]
@@ -363,9 +347,7 @@ class SetupPyKWArg(CMD):
             spec = importlib.util.spec_from_file_location(
                 "setup", str(setup_filepath.parts[-1])
             )
-            with unittest.mock.patch(
-                "setuptools.setup", new=grab_setup_kwargs
-            ):
+            with unittest.mock.patch("setuptools.setup", new=grab_setup_kwargs):
                 setup = importlib.util.module_from_spec(spec)
                 spec.loader.exec_module(setup)
 
@@ -391,18 +373,14 @@ class Release(CMD):
     Release a package (if not already released)
     """
 
-    arg_package = Arg(
-        "package", help="Relative path to package to release", type=Path
-    )
+    arg_package = Arg("package", help="Relative path to package to release", type=Path)
 
     async def run(self):
         # Ensure target plugin directory has no unstaged changes
         cmd = ["git", "status", "--porcelain", str(self.package)]
         self.logger.debug("Running: %s", " ".join(cmd))
         proc = await asyncio.create_subprocess_exec(
-            *cmd,
-            stdout=asyncio.subprocess.PIPE,
-            stderr=asyncio.subprocess.PIPE,
+            *cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE,
         )
         stdout, stderr = await proc.communicate()
         if stderr or proc.returncode != 0:
@@ -435,9 +413,7 @@ class Release(CMD):
                 with open(archive_file, "wb") as archive:
                     cmd = ["git", "archive", "--format=tar", "HEAD"]
                     print(f"$ {' '.join(cmd)}")
-                    proc = await asyncio.create_subprocess_exec(
-                        *cmd, stdout=archive
-                    )
+                    proc = await asyncio.create_subprocess_exec(*cmd, stdout=archive)
                     await proc.wait()
                     if proc.returncode != 0:
                         raise RuntimeError
@@ -512,10 +488,7 @@ class BumpPackages(CMD):
                 str,
                 map(
                     sum,
-                    zip(
-                        map(int, original.split(".")),
-                        map(int, increment.split(".")),
-                    ),
+                    zip(map(int, original.split(".")), map(int, increment.split(".")),),
                 ),
             )
         )
@@ -532,9 +505,7 @@ class BumpPackages(CMD):
         for version_file in main_package.rglob("**/version.py"):
             # Ignore skel
             if skel in version_file.parents:
-                self.logger.debug(
-                    "Skipping skel verison file %s", version_file
-                )
+                self.logger.debug("Skipping skel verison file %s", version_file)
                 continue
             # If we're only supposed to increment versions of some packages,
             # check we're in the right package, skip if not.
@@ -542,9 +513,7 @@ class BumpPackages(CMD):
             with chdir(setup_filepath.parent):
                 name = SetupPyKWArg.get_kwargs(setup_filepath)["name"]
                 if self.only and name not in self.only:
-                    self.logger.debug(
-                        "Verison file not in only %s", version_file
-                    )
+                    self.logger.debug("Verison file not in only %s", version_file)
                     continue
                 elif name in self.skip:
                     self.logger.debug("Skipping verison file %s", version_file)

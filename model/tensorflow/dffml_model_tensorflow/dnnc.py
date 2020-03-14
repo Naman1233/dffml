@@ -53,9 +53,7 @@ class TensorflowModelContext(ModelContext):
         """
         dtype = feature.dtype()
         if not inspect.isclass(dtype):
-            self.logger.warning(
-                "Unknown dtype %r. Cound not create column" % (dtype)
-            )
+            self.logger.warning("Unknown dtype %r. Cound not create column" % (dtype))
             return None
         if (
             dtype is int
@@ -66,9 +64,7 @@ class TensorflowModelContext(ModelContext):
             return tf.feature_column.numeric_column(
                 feature.NAME, shape=feature.length()
             )
-        self.logger.warning(
-            "Unknown dtype %r. Cound not create column" % (dtype)
-        )
+        self.logger.warning("Unknown dtype %r. Cound not create column" % (dtype))
         return None
 
     def _applicable_features(self):
@@ -136,12 +132,8 @@ class DNNClassifierModelConfig:
     classifications: List[str] = field("Options for value of classification")
     features: Features = field("Features to train on")
     clstype: Type = field("Data type of classifications values", default=str)
-    batchsize: int = field(
-        "Number records to pass through in an epoch", default=20
-    )
-    shuffle: bool = field(
-        "Randomise order of records in a batch", default=True
-    )
+    batchsize: int = field("Number records to pass through in an epoch", default=20)
+    shuffle: bool = field("Randomise order of records in a batch", default=True)
     steps: int = field("Number of steps to train the model", default=3000)
     epochs: int = field(
         "Number of iterations to pass over all records in a source", default=30
@@ -176,9 +168,7 @@ class DNNClassifierModelContext(TensorflowModelContext):
         Create an index, possible predict mapping and sort the list of
         classifications first.
         """
-        cids = dict(
-            zip(range(0, len(classifications)), sorted(classifications))
-        )
+        cids = dict(zip(range(0, len(classifications)), sorted(classifications)))
         self.logger.debug("cids(%d): %r", len(cids), cids)
         return cids
 
@@ -224,15 +214,12 @@ class DNNClassifierModelContext(TensorflowModelContext):
             async for record in sources.with_features(
                 self.features + [self.parent.config.predict.NAME]
             )
-            if record.feature(self.parent.config.predict.NAME)
-            in self.classifications
+            if record.feature(self.parent.config.predict.NAME) in self.classifications
         ]:
             for feature, results in record.features(self.features).items():
                 x_cols[feature].append(np.array(results))
             y_cols.append(
-                self.classifications[
-                    record.feature(self.parent.config.predict.NAME)
-                ]
+                self.classifications[record.feature(self.parent.config.predict.NAME)]
             )
         if not y_cols:
             raise ValueError("No records to train on")
@@ -264,15 +251,12 @@ class DNNClassifierModelContext(TensorflowModelContext):
             async for record in sources.with_features(
                 self.features + [self.parent.config.predict.NAME]
             )
-            if record.feature(self.parent.config.predict.NAME)
-            in self.classifications
+            if record.feature(self.parent.config.predict.NAME) in self.classifications
         ]:
             for feature, results in record.features(self.features).items():
                 x_cols[feature].append(np.array(results))
             y_cols.append(
-                self.classifications[
-                    record.feature(self.parent.config.predict.NAME)
-                ]
+                self.classifications[record.feature(self.parent.config.predict.NAME)]
             )
         y_cols = np.array(y_cols)
         for feature in x_cols:
@@ -302,9 +286,7 @@ class DNNClassifierModelContext(TensorflowModelContext):
         accuracy_score = self.model.evaluate(input_fn=input_fn)
         return Accuracy(accuracy_score["accuracy"])
 
-    async def predict(
-        self, records: AsyncIterator[Record]
-    ) -> AsyncIterator[Record]:
+    async def predict(self, records: AsyncIterator[Record]) -> AsyncIterator[Record]:
         """
         Uses trained data to make a prediction about the quality of a record.
         """

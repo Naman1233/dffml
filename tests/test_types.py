@@ -16,9 +16,7 @@ def pie_validation(x):
 Pie = Definition(name="pie", primitive="float", validate=pie_validation)
 Radius = Definition(name="radius", primitive="float")
 Area = Definition(name="area", primitive="float")
-ShapeName = Definition(
-    name="shape_name", primitive="str", validate=lambda x: x.upper()
-)
+ShapeName = Definition(name="shape_name", primitive="str", validate=lambda x: x.upper())
 
 
 @op(
@@ -26,22 +24,13 @@ ShapeName = Definition(
     outputs={"shape": MAPPING},
 )
 async def get_circle(name: str, radius: float, pie: float):
-    return {
-        "shape": {
-            "name": name,
-            "radius": radius,
-            "area": pie * radius * radius,
-        }
-    }
+    return {"shape": {"name": name, "radius": radius, "area": pie * radius * radius,}}
 
 
 class TestDefintion(AsyncTestCase):
     async def setUp(self):
         self.dataflow = DataFlow(
-            operations={
-                "get_circle": get_circle.op,
-                "get_single": GetSingle.imp.op,
-            },
+            operations={"get_circle": get_circle.op, "get_single": GetSingle.imp.op,},
             seed=[
                 Input(
                     value=[get_circle.op.outputs["shape"].name],
@@ -74,9 +63,7 @@ class TestDefintion(AsyncTestCase):
                 "area": [
                     Input(value="unitcircle", definition=ShapeName),
                     Input(value=1, definition=Radius),
-                    Input(
-                        value=4, definition=Pie
-                    ),  # this should raise validation eror
+                    Input(value=4, definition=Pie),  # this should raise validation eror
                 ]
             }
             pass

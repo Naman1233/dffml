@@ -5,7 +5,7 @@ from dffml import train, accuracy, predict, DefFeature, Features, AsyncTestCase
 
 from dffml_model_scratch.logisticregression import (
     LogisticRegressionConfig,
-    LogisticRegression
+    LogisticRegression,
 )
 
 TRAIN_DATA = [
@@ -75,11 +75,8 @@ class TestLogisticRegression(AsyncTestCase):
 
     async def test_02_predict(self):
         # Get the prediction for each piece of test data
-        async for i, features, prediction in predict(
-            self.model, *self.test_data
-        ):
+        async for i, features, prediction in predict(self.model, *self.test_data):
             # Grab the correct value
             correct = self.test_data[i]["Y"]
             # Grab the predicted value
             prediction = prediction["Y"]["value"]
-

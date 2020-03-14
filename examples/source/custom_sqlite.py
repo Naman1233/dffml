@@ -20,9 +20,7 @@ class CustomSQLiteSourceContext(BaseSourceContext):
         feature_data = OrderedDict.fromkeys(feature_cols)
         feature_data.update(record.features(feature_cols))
         await db.execute(
-            "INSERT OR REPLACE INTO features (key, "
-            + ", ".join(feature_cols)
-            + ") "
+            "INSERT OR REPLACE INTO features (key, " + ", ".join(feature_cols) + ") "
             "VALUES(?, " + ", ".join("?" * len(feature_cols)) + ")",
             [record.key] + list(feature_data.values()),
         )

@@ -163,14 +163,7 @@ def mysql(*, sql_setup: Optional[str] = None):
                     "-subj",
                     f"/C=US/ST=Oregon/L=Portland/O=Company Name/OU=Server Cert/CN=mysql.unittest",
                 ],
-                [
-                    "openssl",
-                    "rsa",
-                    "-in",
-                    "server-key.pem",
-                    "-out",
-                    "server-key.pem",
-                ],
+                ["openssl", "rsa", "-in", "server-key.pem", "-out", "server-key.pem",],
                 [
                     "openssl",
                     "x509",
@@ -217,8 +210,7 @@ def mysql(*, sql_setup: Optional[str] = None):
             start_time = time.clock_gettime(time.CLOCK_MONOTONIC_RAW)
             max_timeout = float(os.getenv("MYSQL_START_TIMEOUT", "600"))
             LOGGER.debug(
-                "Attempting to connect to MySQL: Timeout of %d seconds",
-                max_timeout,
+                "Attempting to connect to MySQL: Timeout of %d seconds", max_timeout,
             )
             while not check_connection(container_ip, DEFAULT_PORT):
                 end_time = time.clock_gettime(time.CLOCK_MONOTONIC_RAW)
@@ -226,8 +218,7 @@ def mysql(*, sql_setup: Optional[str] = None):
                     raise MySQLFailedToStart("Timed out waiting for MySQL")
             end_time = time.clock_gettime(time.CLOCK_MONOTONIC_RAW)
             LOGGER.debug(
-                "MySQL running: Took %0.02f seconds",
-                end_time - container_start_time,
+                "MySQL running: Took %0.02f seconds", end_time - container_start_time,
             )
             # Yield IP of container to caller
             yield container_ip, root_cert_path.resolve()

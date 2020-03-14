@@ -13,8 +13,7 @@ class ServerRunner:
         self.server_stopped = asyncio.create_task(coro)
         server_started = asyncio.create_task(self.begin.get())
         done, pending = await asyncio.wait(
-            {self.server_stopped, server_started},
-            return_when=asyncio.FIRST_COMPLETED,
+            {self.server_stopped, server_started}, return_when=asyncio.FIRST_COMPLETED,
         )
         # Raise issues if they happened
         for task in done:
@@ -33,8 +32,8 @@ class ServerRunner:
     @asynccontextmanager
     async def patch(cls, server_cls):
         self = cls()
-        with patch.object(
-            server_cls, "RUN_YIELD_START", new=self.begin
-        ), patch.object(server_cls, "RUN_YIELD_FINISH", new=self.end):
+        with patch.object(server_cls, "RUN_YIELD_START", new=self.begin), patch.object(
+            server_cls, "RUN_YIELD_FINISH", new=self.end
+        ):
             yield self
             await self.stop()

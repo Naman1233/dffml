@@ -58,10 +58,7 @@ def sync_urlopen(url, protocol_allowlist=DEFAULT_PROTOCOL_ALLOWLIST):
 
 
 def cached_download(
-    url,
-    target_path,
-    expected_hash,
-    protocol_allowlist=DEFAULT_PROTOCOL_ALLOWLIST,
+    url, target_path, expected_hash, protocol_allowlist=DEFAULT_PROTOCOL_ALLOWLIST,
 ):
     """
     Download a file and verify the hash of the downloaded file. If the file
@@ -111,9 +108,7 @@ def cached_download(
         filehash = hashlib.sha384(target_path.read_bytes()).hexdigest()
         if filehash != expected_hash:
             if error:
-                raise HashValidationError(
-                    str(target_path), filehash, expected_hash
-                )
+                raise HashValidationError(str(target_path), filehash, expected_hash)
             return False
         return True
 
@@ -123,9 +118,7 @@ def cached_download(
             args = list(args) + [target_path]
             if not target_path.is_file() or not validate_hash(error=False):
                 # TODO(p5) Blocking request in coroutine
-                with sync_urlopen(
-                    url, protocol_allowlist=protocol_allowlist
-                ) as resp:
+                with sync_urlopen(url, protocol_allowlist=protocol_allowlist) as resp:
                     target_path.write_bytes(resp.read())
             validate_hash()
             return await func(*args, **kwds)

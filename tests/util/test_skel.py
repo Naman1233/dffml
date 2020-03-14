@@ -29,8 +29,7 @@ class TestSkelUtil(AsyncTestCase):
 
     def test_all_common_files_accounted_for(self):
         common_files = [
-            path.relative_to(self.skel.common)
-            for path in self.skel.common_files()
+            path.relative_to(self.skel.common) for path in self.skel.common_files()
         ]
         for check in COMMON_FILES:
             self.assertIn(check, common_files)

@@ -54,9 +54,7 @@ class RecordsTestCase(AsyncExitStackTestCase):
         #     new=model_load))
         self._stack.enter_context(
             patch.object(
-                ModelCMD,
-                "arg_model",
-                new=ModelCMD.arg_model.modify(type=model_load),
+                ModelCMD, "arg_model", new=ModelCMD.arg_model.modify(type=model_load),
             )
         )
         self._stack.enter_context(
@@ -65,9 +63,7 @@ class RecordsTestCase(AsyncExitStackTestCase):
         self._stack.enter_context(
             patch("dffml.df.base.OperationImplementation.load", new=opimp_load)
         )
-        self._stack.enter_context(
-            patch("dffml.df.types.Operation.load", new=op_load)
-        )
+        self._stack.enter_context(patch("dffml.df.types.Operation.load", new=op_load))
 
 
 @config
@@ -97,9 +93,7 @@ class FakeModelContext(ModelContext):
     async def accuracy(self, sources: Sources) -> AccuracyType:
         return AccuracyType(0.42)
 
-    async def predict(
-        self, records: AsyncIterator[Record]
-    ) -> AsyncIterator[Record]:
+    async def predict(self, records: AsyncIterator[Record]) -> AsyncIterator[Record]:
         target = self.parent.config.predict.NAME
         async for record in records:
             record.predicted(target, random.random(), float(record.key))
@@ -188,9 +182,7 @@ class TestMerge(RecordsTestCase):
             self.assertEqual(
                 contents,
                 "key,tag\n"
-                + "\n".join(
-                    [f"{record.key},untagged" for record in self.records]
-                )
+                + "\n".join([f"{record.key},untagged" for record in self.records])
                 + "\n",
                 "Incorrect data in csv file",
             )
@@ -232,9 +224,7 @@ class TestMerge(RecordsTestCase):
             self.assertIn("sometag", contents)
             # Check the untagged source
             with self.subTest(tagged=None):
-                async with CSVSource(
-                    CSVSourceConfig(filename=csv_tempfile)
-                ) as source:
+                async with CSVSource(CSVSourceConfig(filename=csv_tempfile)) as source:
                     async with source() as sctx:
                         records = [record async for record in sctx.records()]
                         self.assertEqual(len(records), len(self.records))
@@ -284,10 +274,7 @@ class TestDataflowRunAllRecords(RecordsTestCase):
             dataflow = io.StringIO()
             with contextlib.redirect_stdout(dataflow):
                 await Dataflow.cli(
-                    "create",
-                    "-config",
-                    "json",
-                    *map(lambda op: op.name, OPERATIONS),
+                    "create", "-config", "json", *map(lambda op: op.name, OPERATIONS),
                 )
             dataflow_file.write(dataflow.getvalue().encode())
             dataflow_file.seek(0)
@@ -307,14 +294,10 @@ class TestDataflowRunAllRecords(RecordsTestCase):
                 "-inputs",
                 '["result"]=get_single_spec',
             )
-            results = {
-                result.key: result.feature("result") for result in results
-            }
+            results = {result.key: result.feature("result") for result in results}
             for record in self.records:
                 self.assertIn(record.key, results)
-                self.assertEqual(
-                    self.record_keys[record.key], results[record.key]
-                )
+                self.assertEqual(self.record_keys[record.key], results[record.key])
 
 
 class TestDataflowRunRecordSet(RecordsTestCase):
@@ -331,10 +314,7 @@ class TestDataflowRunRecordSet(RecordsTestCase):
             dataflow = io.StringIO()
             with contextlib.redirect_stdout(dataflow):
                 await Dataflow.cli(
-                    "create",
-                    "-config",
-                    "json",
-                    *map(lambda op: op.name, OPERATIONS),
+                    "create", "-config", "json", *map(lambda op: op.name, OPERATIONS),
                 )
             dataflow_file.write(dataflow.getvalue().encode())
             dataflow_file.seek(0)
@@ -357,9 +337,7 @@ class TestDataflowRunRecordSet(RecordsTestCase):
                 '["result"]=get_single_spec',
             )
             self.assertEqual(len(results), 1)
-            self.assertEqual(
-                self.record_keys[test_key], results[0].feature("result")
-            )
+            self.assertEqual(self.record_keys[test_key], results[0].feature("result"))
 
 
 class TestTrain(RecordsTestCase):
@@ -411,8 +389,7 @@ class TestPredict(RecordsTestCase):
             "fake",
         )
         results = {
-            record.key: record.prediction("fake").confidence
-            for record in results
+            record.key: record.prediction("fake").confidence for record in results
         }
         for record in self.records:
             self.assertEqual(float(record.key), results[record.key])
@@ -437,8 +414,7 @@ class TestPredict(RecordsTestCase):
         )
         self.assertEqual(len(results), len(subset))
         results = {
-            record.key: record.prediction("fake").confidence
-            for record in results
+            record.key: record.prediction("fake").confidence for record in results
         }
         for record in subset:
             self.assertEqual(float(record.key), results[record.key])

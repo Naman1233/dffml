@@ -45,16 +45,10 @@ class TestExample(unittest.TestCase):
             # Run training
             subprocess.check_output(["bash", sh_filepath("train.sh")])
             # Check the Accuracy
-            stdout = subprocess.check_output(
-                ["bash", sh_filepath("accuracy.sh")]
-            )
+            stdout = subprocess.check_output(["bash", sh_filepath("accuracy.sh")])
             self.assertEqual(stdout.decode().strip(), "1.0")
             # Make the prediction
-            stdout = subprocess.check_output(
-                ["bash", sh_filepath("predict.sh")]
-            )
+            stdout = subprocess.check_output(["bash", sh_filepath("predict.sh")])
             records = json.loads(stdout.decode())
             # Check the salary
-            self.assertEqual(
-                round(records[0]["prediction"]["Salary"]["value"]), 70.0
-            )
+            self.assertEqual(round(records[0]["prediction"]["Salary"]["value"]), 70.0)

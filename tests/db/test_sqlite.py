@@ -16,9 +16,7 @@ class TestSqlDatabase(AsyncTestCase):
         os.remove(cls.database_name)
 
     async def setUp(self):
-        self.sdb = SqliteDatabase(
-            SqliteDatabaseConfig(filename=self.database_name)
-        )
+        self.sdb = SqliteDatabase(SqliteDatabaseConfig(filename=self.database_name))
         self.table_name = "myTable"
         self.cols = {
             "key": "INTEGER NOT NULL PRIMARY KEY",
@@ -77,20 +75,14 @@ class TestSqlDatabase(AsyncTestCase):
         async with self.sdb() as db_ctx:
             await db_ctx.remove(self.table_name, condition)
             results = [
-                row
-                async for row in db_ctx.lookup(self.table_name, ["firstName"])
+                row async for row in db_ctx.lookup(self.table_name, ["firstName"])
             ]
             self.assertEqual(results, [{"firstName": "Bill"}])
 
     async def test_4_insert_or_update(self):
         data = {"key": 12, "firstName": "Biller"}
         expected = [
-            {
-                "key": 12,
-                "firstName": "Biller",
-                "lastName": "Miles",
-                "age": 40.0,
-            }
+            {"key": 12, "firstName": "Biller", "lastName": "Miles", "age": 40.0,}
         ]
         async with self.sdb() as db_ctx:
             await db_ctx.insert_or_update(self.table_name, data)

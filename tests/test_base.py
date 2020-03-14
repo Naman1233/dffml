@@ -64,16 +64,12 @@ class TestAutoArgsConfig(unittest.TestCase):
                                     "config": {},
                                 },
                                 "name": {
-                                    "arg": Arg(
-                                        type=str, help="Name of FakeTesting"
-                                    ),
+                                    "arg": Arg(type=str, help="Name of FakeTesting"),
                                     "config": {},
                                 },
                                 "readonly": {
                                     "arg": Arg(
-                                        type=bool,
-                                        action="store_true",
-                                        default=False,
+                                        type=bool, action="store_true", default=False,
                                     ),
                                     "config": {},
                                 },
@@ -83,8 +79,7 @@ class TestAutoArgsConfig(unittest.TestCase):
                                 },
                                 "source": {
                                     "arg": Arg(
-                                        type=BaseSource.load,
-                                        default=JSONSource,
+                                        type=BaseSource.load, default=JSONSource,
                                     ),
                                     "config": {},
                                 },
@@ -122,9 +117,7 @@ class TestAutoArgsConfig(unittest.TestCase):
         self.assertEqual(config.source.config.filename, "file.json")
         self.assertEqual(
             config.features,
-            Features(
-                DefFeature("Year", int, 1), DefFeature("Commits", int, 10)
-            ),
+            Features(DefFeature("Year", int, 1), DefFeature("Commits", int, 10)),
         )
 
     def test_config_set(self):
@@ -159,7 +152,5 @@ class TestAutoArgsConfig(unittest.TestCase):
         self.assertEqual(config.source.config.filename, "file.csv")
         self.assertEqual(
             config.features,
-            Features(
-                DefFeature("Year", int, 1), DefFeature("Commits", int, 10)
-            ),
+            Features(DefFeature("Year", int, 1), DefFeature("Commits", int, 10)),
         )

@@ -29,12 +29,8 @@ class TestCreateTLS(AsyncTestCase):
                     "-cert",
                     os.path.join(tempdir, "server.pem"),
                 )
-                self.assertTrue(
-                    os.path.isfile(os.path.join(tempdir, "server.key"))
-                )
-                self.assertTrue(
-                    os.path.isfile(os.path.join(tempdir, "server.pem"))
-                )
+                self.assertTrue(os.path.isfile(os.path.join(tempdir, "server.key")))
+                self.assertTrue(os.path.isfile(os.path.join(tempdir, "server.pem")))
 
             with self.subTest(certs="client"):
                 await HTTPService.createtls.client.cli(
@@ -51,15 +47,9 @@ class TestCreateTLS(AsyncTestCase):
                     "-server-cert",
                     os.path.join(tempdir, "server.pem"),
                 )
-                self.assertTrue(
-                    os.path.isfile(os.path.join(tempdir, "client.key"))
-                )
-                self.assertTrue(
-                    os.path.isfile(os.path.join(tempdir, "client.pem"))
-                )
-                self.assertTrue(
-                    os.path.isfile(os.path.join(tempdir, "client.csr"))
-                )
+                self.assertTrue(os.path.isfile(os.path.join(tempdir, "client.key")))
+                self.assertTrue(os.path.isfile(os.path.join(tempdir, "client.pem")))
+                self.assertTrue(os.path.isfile(os.path.join(tempdir, "client.csr")))
 
 
 class TestServer(AsyncTestCase):
@@ -94,9 +84,7 @@ class TestServer(AsyncTestCase):
     @contextlib.asynccontextmanager
     async def post(self, cli, path, *args, **kwargs):
         async with aiohttp.ClientSession() as session:
-            async with session.post(
-                self.url(cli) + path, *args, **kwargs
-            ) as r:
+            async with session.post(self.url(cli) + path, *args, **kwargs) as r:
                 if r.status != HTTPStatus.OK:
                     raise ServerException((await r.json())["error"])
                 yield r
@@ -106,9 +94,7 @@ class TestServer(AsyncTestCase):
 
     async def test_start_insecure(self):
         async with ServerRunner.patch(HTTPService.server) as tserver:
-            await tserver.start(
-                HTTPService.server.cli("-port", "0", "-insecure")
-            )
+            await tserver.start(HTTPService.server.cli("-port", "0", "-insecure"))
 
     async def test_start(self):
         with tempfile.TemporaryDirectory() as tempdir:
@@ -169,25 +155,16 @@ class TestServer(AsyncTestCase):
             )
             # Write out dataflow configs
             pathlib.Path(tempdir, "df", "hello_world.json").write_text(
-                json.dumps(
-                    HELLO_WORLD_DATAFLOW.export(), sort_keys=True, indent=4
-                )
+                json.dumps(HELLO_WORLD_DATAFLOW.export(), sort_keys=True, indent=4)
             )
             pathlib.Path(tempdir, "df", "hello_blank.json").write_text(
-                json.dumps(
-                    HELLO_BLANK_DATAFLOW.export(), sort_keys=True, indent=4
-                )
+                json.dumps(HELLO_BLANK_DATAFLOW.export(), sort_keys=True, indent=4)
             )
             # Start the server
             async with ServerRunner.patch(HTTPService.server) as tserver:
                 cli = await tserver.start(
                     HTTPService.server.cli(
-                        "-port",
-                        "0",
-                        "-insecure",
-                        "-mc-config",
-                        tempdir,
-                        "-mc-atomic",
+                        "-port", "0", "-insecure", "-mc-config", tempdir, "-mc-atomic",
                     )
                 )
                 self.assertEqual(cli.mc_config, tempdir)
@@ -210,14 +187,11 @@ class TestServer(AsyncTestCase):
                             "Feedface": [
                                 {
                                     "value": "Feedface",
-                                    "definition": formatter.op.inputs[
-                                        "data"
-                                    ].name,
+                                    "definition": formatter.op.inputs["data"].name,
                                 }
                             ]
                         },
                     ) as response:
                         self.assertEqual(
-                            {"Feedface": {"response": message}},
-                            await response.json(),
+                            {"Feedface": {"response": message}}, await response.json(),
                         )

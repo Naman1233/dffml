@@ -10,11 +10,7 @@ class MiscService(CMD):
     """
 
     arg_integer = Arg(
-        "-integer",
-        type=int,
-        help=f"Port to do nothing with",
-        default=0,
-        required=True,
+        "-integer", type=int, help=f"Port to do nothing with", default=0, required=True,
     )
 
     async def run(self):

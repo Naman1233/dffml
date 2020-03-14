@@ -13,22 +13,14 @@ class ModelPredictConfig:
 
     def __post_init__(self):
         if not isinstance(self.model, Model):
-            raise TypeError(
-                "model should be an instance of `dffml.model.model.Model`"
-            )
+            raise TypeError("model should be an instance of `dffml.model.model.Model`")
 
 
 @op(
     name="dffml.model.predict",
-    inputs={
-        "features": Definition(
-            name="record_features", primitive="Dict[str, Any]"
-        )
-    },
+    inputs={"features": Definition(name="record_features", primitive="Dict[str, Any]")},
     outputs={
-        "prediction": Definition(
-            name="model_predictions", primitive="Dict[str, Any]"
-        )
+        "prediction": Definition(name="model_predictions", primitive="Dict[str, Any]")
     },
     config_cls=ModelPredictConfig,
     imp_enter={"model": (lambda self: self.config.model)},

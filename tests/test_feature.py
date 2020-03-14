@@ -51,9 +51,9 @@ class TestLoggingDict(AsyncTestCase):
         self.ldict = LoggingDict(self.data)
 
     def ginternal(self, key):
-        return getattr(
-            self.ldict, "_%s__dict" % (self.ldict.__class__.__qualname__,)
-        )[key]
+        return getattr(self.ldict, "_%s__dict" % (self.ldict.__class__.__qualname__,))[
+            key
+        ]
 
     async def test_get(self):
         self.assertEqual(await self.ldict.get("feed", default="face"), "face")

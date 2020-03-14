@@ -86,10 +86,7 @@ class RecordData(object):
             key: getattr(self, key, [])
             for key in self.EXPORTED
             if not isinstance(getattr(self, key, {}), dict)
-            or (
-                isinstance(getattr(self, key, {}), dict)
-                and getattr(self, key, {})
-            )
+            or (isinstance(getattr(self, key, {}), dict) and getattr(self, key, {}))
         }
         # Do not report if there has been no change since instantiation to
         # a default time value
@@ -156,11 +153,7 @@ class Record(object):
                 [
                     (
                         "%-30s\n\tvalue:%s, confidence:%s"
-                        % (
-                            pred,
-                            str(conf_val["value"]),
-                            str(conf_val["confidence"]),
-                        )
+                        % (pred, str(conf_val["value"]), str(conf_val["confidence"]),)
                     )
                     for pred, conf_val in self.data.prediction.items()
                 ]
@@ -235,10 +228,7 @@ class Record(object):
         if not subset:
             return self.data.features
         for name in subset:
-            if (
-                not name in self.data.features
-                or self.data.features[name] is None
-            ):
+            if not name in self.data.features or self.data.features[name] is None:
                 return {}
         return {name: self.data.features[name] for name in subset}
 
@@ -337,9 +327,6 @@ class Record(object):
         if not subset:
             return self.data.prediction
         for name in subset:
-            if (
-                not name in self.data.prediction
-                or self.data.prediction[name] is None
-            ):
+            if not name in self.data.prediction or self.data.prediction[name] is None:
                 return {}
         return {name: self.data.prediction[name] for name in subset}

@@ -82,9 +82,7 @@ class Definition(NamedTuple):
             for key, typename in kwargs["spec"]["types"].items():
                 annotations[key] = cls.type_lookup(typename)
             def_tuple["__annotations__"] = annotations
-            kwargs["spec"] = type(
-                kwargs["spec"]["name"], (NamedTuple,), def_tuple
-            )
+            kwargs["spec"] = type(kwargs["spec"]["name"], (NamedTuple,), def_tuple)
         return cls(**kwargs)
 
     @classmethod
@@ -242,8 +240,7 @@ class Operation(NamedTuple, Entrypoint):
             if not prop in kwargs:
                 continue
             kwargs[prop] = [
-                Definition._fromdict(**definition)
-                for definition in kwargs[prop]
+                Definition._fromdict(**definition) for definition in kwargs[prop]
             ]
         if "stage" in kwargs:
             kwargs["stage"] = Stage[kwargs["stage"].upper()]
@@ -301,10 +298,7 @@ class Input(object):
         return list(
             set(
                 itertools.chain(
-                    *[
-                        [item] + list(set(item.get_parents()))
-                        for item in self.parents
-                    ]
+                    *[[item] + list(set(item.get_parents())) for item in self.parents]
                 )
             )
         )
@@ -434,16 +428,11 @@ class DataFlow:
                 getattr(value, "ENTRY_POINT_NAME", ["not-opimp"]) == ["opimp"]
             )
             if (
-                getattr(value, "imp", None) is not None
-                or is_opimp_non_decorated
+                getattr(value, "imp", None) is not None or is_opimp_non_decorated
             ) and getattr(value, "op", None) is not None:
                 # Get the operation and implementation from the wrapped object
                 operation = getattr(value, "op", None)
-                opimp = (
-                    value
-                    if is_opimp_non_decorated
-                    else getattr(value, "imp", None)
-                )
+                opimp = value if is_opimp_non_decorated else getattr(value, "imp", None)
                 # Set the implementation if not explicitly set
                 self.implementations.setdefault(operation.name, opimp)
                 # Change this entry to the instance of Operation associated with
@@ -451,9 +440,7 @@ class DataFlow:
                 self.operations[instance_name] = operation
                 value = operation
             # Make sure every operation has the correct instance name
-            self.operations[instance_name] = value._replace(
-                instance_name=instance_name
-            )
+            self.operations[instance_name] = value._replace(instance_name=instance_name)
         # Grab all definitions from operations
         operations = list(self.operations.values())
         definitions = list(
@@ -470,9 +457,7 @@ class DataFlow:
                 )
             )
         )
-        definitions = {
-            definition.name: definition for definition in definitions
-        }
+        definitions = {definition.name: definition for definition in definitions}
         self.definitions = definitions
         # Determine the dataflow if not given
         if self.flow is None:
@@ -488,35 +473,21 @@ class DataFlow:
             # TODO(p5) Make stanardize this so that seed is also a dict?
             for output_source in input_flow.conditions:
                 if isinstance(output_source, str):
-                    self.by_origin[operation.stage].setdefault(
-                        output_source, []
-                    )
-                    self.by_origin[operation.stage][output_source].append(
-                        operation
-                    )
+                    self.by_origin[operation.stage].setdefault(output_source, [])
+                    self.by_origin[operation.stage][output_source].append(operation)
                 else:
                     for origin in output_source.items():
                         self.by_origin[operation.stage].setdefault(origin, [])
-                        self.by_origin[operation.stage][origin].append(
-                            operation
-                        )
+                        self.by_origin[operation.stage][origin].append(operation)
             for output_name, output_sources in input_flow.inputs.items():
                 for output_source in output_sources:
                     if isinstance(output_source, str):
-                        self.by_origin[operation.stage].setdefault(
-                            output_source, []
-                        )
-                        self.by_origin[operation.stage][output_source].append(
-                            operation
-                        )
+                        self.by_origin[operation.stage].setdefault(output_source, [])
+                        self.by_origin[operation.stage][output_source].append(operation)
                     else:
                         for origin in output_source.items():
-                            self.by_origin[operation.stage].setdefault(
-                                origin, []
-                            )
-                            self.by_origin[operation.stage][origin].append(
-                                operation
-                            )
+                            self.by_origin[operation.stage].setdefault(origin, [])
+                            self.by_origin[operation.stage][origin].append(operation)
 
     def export(self, *, linked: bool = False):
         exported = {
@@ -542,9 +513,7 @@ class DataFlow:
             kwargs.update(cls._resolve(kwargs))
             del kwargs["definitions"]
         kwargs["operations"] = {
-            instance_name: Operation._fromdict(
-                instance_name=instance_name, **operation
-            )
+            instance_name: Operation._fromdict(instance_name=instance_name, **operation)
             for instance_name, operation in kwargs["operations"].items()
         }
         # Import seed inputs
@@ -606,9 +575,7 @@ class DataFlow:
                     producing_operations = output_dict[definition.name]
                     # If the input could be produced by an operation in the
                     # network, then it's definition name will be in output_dict.
-                    flow_dict[operation.instance_name].inputs[
-                        internal_name
-                    ] = []
+                    flow_dict[operation.instance_name].inputs[internal_name] = []
                     # We look through the outputs and add any one that matches
                     # the definition and add it to the list in format of
                     # operation_name . internal_name (of output)
@@ -626,9 +593,7 @@ class DataFlow:
                                     }
                                 )
                 else:
-                    flow_dict[operation.instance_name].inputs[
-                        internal_name
-                    ] = ["seed"]
+                    flow_dict[operation.instance_name].inputs[internal_name] = ["seed"]
             # Now do conditions
             for definition in operation.conditions:
                 if definition.name in output_dict:
@@ -644,9 +609,7 @@ class DataFlow:
                             output_definition,
                         ) in producting_operation.outputs.items():
                             if output_definition == definition:
-                                flow_dict[
-                                    operation.instance_name
-                                ].conditions.append(
+                                flow_dict[operation.instance_name].conditions.append(
                                     {
                                         producting_operation.instance_name: internal_name_of_output
                                     }

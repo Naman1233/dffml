@@ -102,9 +102,7 @@ def ignore_args(func):
 # STANDARD_TYPES Will be the type names which are applicable across languages
 # used to transform types from one language into anothers
 STANDARD_TYPES = {"Dict": "map", "List": "array", "Any": "generic"}
-STANDARD_TYPES_REVERSED = dict(
-    zip(STANDARD_TYPES.values(), STANDARD_TYPES.keys())
-)
+STANDARD_TYPES_REVERSED = dict(zip(STANDARD_TYPES.values(), STANDARD_TYPES.keys()))
 
 
 def type_lookup(typename):
@@ -126,9 +124,7 @@ def export_value(obj, key, value):
     elif hasattr(value, "_asdict"):
         obj[key] = value._asdict()
     elif getattr(value, "__module__", None) == "typing":
-        obj[key] = STANDARD_TYPES.get(
-            str(value).replace("typing.", ""), "generic"
-        )
+        obj[key] = STANDARD_TYPES.get(str(value).replace("typing.", ""), "generic")
 
 
 def export_list(iterable):

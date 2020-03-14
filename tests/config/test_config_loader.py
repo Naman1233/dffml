@@ -12,9 +12,7 @@ class TestConfigLoader(AsyncTestCase):
         cls.test_dir = tempfile.TemporaryDirectory()
 
         cls.config_folder_name = "the_config_name"
-        cls.config_folder_path = os.path.join(
-            cls.test_dir.name, cls.config_folder_name
-        )
+        cls.config_folder_path = os.path.join(cls.test_dir.name, cls.config_folder_name)
         os.mkdir(cls.config_folder_path)
         temp_path = cls.config_folder_path
         pathlib.Path(
@@ -44,9 +42,7 @@ class TestConfigLoader(AsyncTestCase):
         temp_path = self.config_folder_path
         async with self.config_loader as cfgl:
             _, conf_dict = await cfgl.load_file(
-                os.path.join(
-                    self.test_dir.name, "the_config_name.dirconf.json"
-                )
+                os.path.join(self.test_dir.name, "the_config_name.dirconf.json")
             )
             self.assertEqual(expected, conf_dict)
 

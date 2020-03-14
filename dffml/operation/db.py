@@ -77,9 +77,7 @@ async def db_query(
     imp_enter={"database": (lambda self: self.config.database)},
     ctx_enter={"dbctx": (lambda self: self.parent.database())},
 )
-async def db_query_create_table(
-    self, *, table_name: str, cols: List[str] = []
-):
+async def db_query_create_table(self, *, table_name: str, cols: List[str] = []):
     await self.dbctx.create_table(table_name=table_name, cols=cols)
 
 
@@ -108,9 +106,7 @@ async def db_query_insert(self, *, table_name: str, data: Dict[str, Any]):
 async def db_query_update(
     self, *, table_name: str, data: Dict[str, Any], conditions: Conditions = []
 ):
-    await self.dbctx.update(
-        table_name=table_name, data=data, conditions=conditions
-    )
+    await self.dbctx.update(table_name=table_name, data=data, conditions=conditions)
 
 
 @op(
@@ -120,9 +116,7 @@ async def db_query_update(
     imp_enter={"database": (lambda self: self.config.database)},
     ctx_enter={"dbctx": (lambda self: self.parent.database())},
 )
-async def db_query_remove(
-    self, *, table_name: str, conditions: Conditions = []
-):
+async def db_query_remove(self, *, table_name: str, conditions: Conditions = []):
     await self.dbctx.remove(table_name=table_name, conditions=conditions)
 
 
@@ -140,9 +134,7 @@ async def db_query_remove(
 async def db_query_lookup(
     self, *, table_name: str, cols: List[str] = [], conditions: Conditions = []
 ) -> Dict[str, Any]:
-    result = self.dbctx.lookup(
-        table_name=table_name, cols=cols, conditions=conditions
-    )
+    result = self.dbctx.lookup(table_name=table_name, cols=cols, conditions=conditions)
     return {"lookups": [res async for res in result]}
 
 
@@ -153,7 +145,5 @@ async def db_query_lookup(
     imp_enter={"database": (lambda self: self.config.database)},
     ctx_enter={"dbctx": (lambda self: self.parent.database())},
 )
-async def db_query_insert_or_update(
-    self, *, table_name: str, data: Dict[str, Any]
-):
+async def db_query_insert_or_update(self, *, table_name: str, data: Dict[str, Any]):
     await self.dbctx.insert_or_update(table_name=table_name, data=data)

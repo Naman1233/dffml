@@ -16,9 +16,7 @@ class JSON(Port):
     """
 
     async def export_fd(self, sctx: BaseSourceContext, fd):
-        json.dump(
-            {record.key: record.dict() async for record in sctx.record()}, fd
-        )
+        json.dump({record.key: record.dict() async for record in sctx.record()}, fd)
 
     async def import_fd(self, sctx: BaseSourceContext, fd):
         for key, data in json.load(fd):

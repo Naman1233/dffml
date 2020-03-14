@@ -69,9 +69,7 @@ def applicable_features(self, features):
         if feature.dtype() != int and feature.dtype() != float:
             raise ValueError("Models only supports int or float feature")
         if feature.length() != 1:
-            raise ValueError(
-                "Models only supports single values (non-matrix / array)"
-            )
+            raise ValueError("Models only supports single values (non-matrix / array)")
         usable.append(feature.NAME)
     return sorted(usable)
 
@@ -79,18 +77,8 @@ def applicable_features(self, features):
 supervised_estimators = ["classifier", "regressor"]
 unsupervised_estimators = ["clusterer"]
 for entry_point_name, name, cls, applicable_features_function in [
-    (
-        "scikitknn",
-        "KNeighborsClassifier",
-        KNeighborsClassifier,
-        applicable_features,
-    ),
-    (
-        "scikitadaboost",
-        "AdaBoostClassifier",
-        AdaBoostClassifier,
-        applicable_features,
-    ),
+    ("scikitknn", "KNeighborsClassifier", KNeighborsClassifier, applicable_features,),
+    ("scikitadaboost", "AdaBoostClassifier", AdaBoostClassifier, applicable_features,),
     ("scikitsvc", "SVC", SVC, applicable_features),
     (
         "scikitgpc",
@@ -119,24 +107,14 @@ for entry_point_name, name, cls, applicable_features_function in [
         applicable_features,
     ),
     ("scikitlr", "LinearRegression", LinearRegression, applicable_features),
-    (
-        "scikitlor",
-        "LogisticRegression",
-        LogisticRegression,
-        applicable_features,
-    ),
+    ("scikitlor", "LogisticRegression", LogisticRegression, applicable_features,),
     (
         "scikitgbc",
         "GradientBoostingClassifier",
         GradientBoostingClassifier,
         applicable_features,
     ),
-    (
-        "scikitetc",
-        "ExtraTreesClassifier",
-        ExtraTreesClassifier,
-        applicable_features,
-    ),
+    ("scikitetc", "ExtraTreesClassifier", ExtraTreesClassifier, applicable_features,),
     ("scikitbgc", "BaggingClassifier", BaggingClassifier, applicable_features),
     ("scikiteln", "ElasticNet", ElasticNet, applicable_features),
     ("scikitbyr", "BayesianRidge", BayesianRidge, applicable_features),
@@ -151,12 +129,7 @@ for entry_point_name, name, cls, applicable_features_function in [
         LinearDiscriminantAnalysis,
         applicable_features,
     ),
-    (
-        "scikitdtr",
-        "DecisionTreeRegressor",
-        DecisionTreeRegressor,
-        applicable_features,
-    ),
+    ("scikitdtr", "DecisionTreeRegressor", DecisionTreeRegressor, applicable_features,),
     (
         "scikitgpr",
         "GaussianProcessRegressor",
@@ -173,25 +146,10 @@ for entry_point_name, name, cls, applicable_features_function in [
     ("scikitlars", "Lars", Lars, applicable_features),
     ("scikitkmeans", "KMeans", KMeans, applicable_features),
     ("scikitbirch", "Birch", Birch, applicable_features),
-    (
-        "scikitmbkmeans",
-        "MiniBatchKMeans",
-        MiniBatchKMeans,
-        applicable_features,
-    ),
-    (
-        "scikitap",
-        "AffinityPropagation",
-        AffinityPropagation,
-        applicable_features,
-    ),
+    ("scikitmbkmeans", "MiniBatchKMeans", MiniBatchKMeans, applicable_features,),
+    ("scikitap", "AffinityPropagation", AffinityPropagation, applicable_features,),
     ("scikims", "MeanShift", MeanShift, applicable_features),
-    (
-        "scikitsc",
-        "SpectralClustering",
-        SpectralClustering,
-        applicable_features,
-    ),
+    ("scikitsc", "SpectralClustering", SpectralClustering, applicable_features,),
     (
         "scikitac",
         "AgglomerativeClustering",
@@ -214,10 +172,7 @@ for entry_point_name, name, cls, applicable_features_function in [
         parentModel = ScikitUnsprvised
         config_fields["tcluster"] = (
             Feature,
-            field(
-                "True cluster label for evaluating clustering models",
-                default=None,
-            ),
+            field("True cluster label for evaluating clustering models", default=None,),
         )
     dffml_config_properties = {
         **{
@@ -257,11 +212,7 @@ for entry_point_name, name, cls, applicable_features_function in [
     dffml_cls = type(
         name + "Model",
         (parentModel,),
-        {
-            "CONFIG": dffml_config,
-            "CONTEXT": dffml_cls_ctx,
-            "SCIKIT_MODEL": cls,
-        },
+        {"CONFIG": dffml_config, "CONTEXT": dffml_cls_ctx, "SCIKIT_MODEL": cls,},
     )
     # Add the ENTRY_POINT_ORIG_LABEL
     dffml_cls = entrypoint(entry_point_name)(dffml_cls)

@@ -171,20 +171,14 @@ class RunAllRecords(RunCMD):
                 # Skip running DataFlow if record already has features
                 existing_features = record.features()
                 if self.caching and all(
-                    map(
-                        lambda cached: cached in existing_features,
-                        self.caching,
-                    )
+                    map(lambda cached: cached in existing_features, self.caching,)
                 ):
                     continue
 
                 record_inputs = []
                 for value, def_name in self.inputs:
                     record_inputs.append(
-                        Input(
-                            value=value,
-                            definition=dataflow.definitions[def_name],
-                        )
+                        Input(value=value, definition=dataflow.definitions[def_name],)
                     )
                 if self.record_def:
                     record_inputs.append(
@@ -199,8 +193,7 @@ class RunAllRecords(RunCMD):
                 inputs.append(
                     MemoryInputSet(
                         MemoryInputSetConfig(
-                            ctx=StringInputSetContext(record.key),
-                            inputs=record_inputs,
+                            ctx=StringInputSetContext(record.key), inputs=record_inputs,
                         )
                     )
                 )
@@ -208,9 +201,7 @@ class RunAllRecords(RunCMD):
             if not inputs:
                 return
 
-            async for ctx, results in octx.run(
-                *inputs, strict=not self.no_strict
-            ):
+            async for ctx, results in octx.run(*inputs, strict=not self.no_strict):
                 ctx_str = (await ctx.handle()).as_string()
                 # TODO(p4) Make a RecordInputSetContext which would let us
                 # store the record instead of recalling it by the URL
@@ -232,9 +223,7 @@ class RunAllRecords(RunCMD):
                 exported = await loader.loadb(dataflow_path.read_bytes())
                 dataflow = DataFlow._fromdict(**exported)
         async with self.orchestrator as orchestrator, self.sources as sources:
-            async for record in self.run_dataflow(
-                orchestrator, sources, dataflow
-            ):
+            async for record in self.run_dataflow(orchestrator, sources, dataflow):
                 yield record
 
 
@@ -308,9 +297,7 @@ class Diagram(CMD):
             # Skip stage if not wanted
             if self.stages and stage.value not in self.stages:
                 continue
-            stage_node = hashlib.md5(
-                ("stage." + stage.value).encode()
-            ).hexdigest()
+            stage_node = hashlib.md5(("stage." + stage.value).encode()).hexdigest()
             if len(self.stages) != 1:
                 print(f"subgraph {stage_node}[{stage.value.title()} Stage]")
                 print(f"style {stage_node} fill:#afd388b5,stroke:#a4ca7a")
@@ -334,9 +321,7 @@ class Diagram(CMD):
                         print(f"{input_node} --> {node}")
                 for output_name in operation.outputs.keys():
                     output_node = hashlib.md5(
-                        (
-                            "output." + instance_name + "." + output_name
-                        ).encode()
+                        ("output." + instance_name + "." + output_name).encode()
                     ).hexdigest()
                     if not self.simple:
                         print(f"{output_node}({output_name})")
@@ -368,9 +353,7 @@ class Diagram(CMD):
                             )
                         if not self.simple:
                             input_node = hashlib.md5(
-                                (
-                                    "input." + instance_name + "." + input_name
-                                ).encode()
+                                ("input." + instance_name + "." + input_name).encode()
                             ).hexdigest()
                             print(f"{seed_input_node} --> {input_node}")
                         else:
@@ -378,15 +361,10 @@ class Diagram(CMD):
                     else:
                         if not self.simple:
                             source_output_node = hashlib.md5(
-                                (
-                                    "output."
-                                    + ".".join(list(source.items())[0])
-                                ).encode()
+                                ("output." + ".".join(list(source.items())[0])).encode()
                             ).hexdigest()
                             input_node = hashlib.md5(
-                                (
-                                    "input." + instance_name + "." + input_name
-                                ).encode()
+                                ("input." + instance_name + "." + input_name).encode()
                             ).hexdigest()
                             print(f"{source_output_node} --> {input_node}")
                         else:

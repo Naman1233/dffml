@@ -12,12 +12,8 @@ class RunDataFlowConfig:
 
 @op(
     name="dffml.dataflow.run",
-    inputs={
-        "inputs": Definition(name="flow_inputs", primitive="Dict[str,Any]")
-    },
-    outputs={
-        "results": Definition(name="flow_results", primitive="Dict[str,Any]")
-    },
+    inputs={"inputs": Definition(name="flow_inputs", primitive="Dict[str,Any]")},
+    outputs={"results": Definition(name="flow_results", primitive="Dict[str,Any]")},
     config_cls=RunDataFlowConfig,
     expand=["results"],
 )
@@ -87,8 +83,7 @@ async def run_dataflow(self, inputs: Dict[str, Any]) -> Dict[str, Any]:
     for ctx_str, val_defs in inputs.items():
         inputs_created[ctx_str] = [
             Input(
-                value=val_def["value"],
-                definition=definitions[val_def["definition"]],
+                value=val_def["value"], definition=definitions[val_def["definition"]],
             )
             for val_def in val_defs
         ]

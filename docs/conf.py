@@ -87,6 +87,4 @@ html_static_path = ["_static"]
 
 napoleon_numpy_docstring = True
 
-doctest_global_setup = (
-    pathlib.Path(__file__).parent / "doctest_header.py"
-).read_text()
+doctest_global_setup = (pathlib.Path(__file__).parent / "doctest_header.py").read_text()

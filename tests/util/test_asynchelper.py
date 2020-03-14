@@ -37,9 +37,7 @@ class TestConcurrently(AsyncTestCase):
         return (i * 2) + 7
 
     async def test_no_errors(self):
-        work = {
-            asyncio.create_task(self._test_method(i)): i for i in range(0, 10)
-        }
+        work = {asyncio.create_task(self._test_method(i)): i for i in range(0, 10)}
 
         results = [
             (i, double_i_7)
@@ -52,10 +50,7 @@ class TestConcurrently(AsyncTestCase):
             self.assertEqual(double_i_7, (i * 2) + 7)
 
     async def test_ignore_errors(self):
-        work = {
-            asyncio.create_task(self._test_bad_method(i)): i
-            for i in range(0, 10)
-        }
+        work = {asyncio.create_task(self._test_bad_method(i)): i for i in range(0, 10)}
 
         results = [
             (i, double_i_7)
@@ -68,10 +63,7 @@ class TestConcurrently(AsyncTestCase):
             self.assertEqual(double_i_7, (i * 2) + 7)
 
     async def test_raise_errors(self):
-        work = {
-            asyncio.create_task(self._test_bad_method(i)): i
-            for i in range(0, 10)
-        }
+        work = {asyncio.create_task(self._test_bad_method(i)): i for i in range(0, 10)}
 
         with self.assertRaises(ValueError):
             results = [
@@ -80,9 +72,7 @@ class TestConcurrently(AsyncTestCase):
             ]
 
     async def test_more_tasks_on_the_fly(self):
-        work = {
-            asyncio.create_task(self._test_method(i)): i for i in range(0, 10)
-        }
+        work = {asyncio.create_task(self._test_method(i)): i for i in range(0, 10)}
 
         results = []
         async for i, double_i_7 in concurrently(work, errors="ignore"):
@@ -99,9 +89,7 @@ class TestConcurrently(AsyncTestCase):
         await event.wait()
 
     async def test_no_cancel(self):
-        work = {
-            asyncio.create_task(self._test_method(i)): i for i in range(0, 10)
-        }
+        work = {asyncio.create_task(self._test_method(i)): i for i in range(0, 10)}
         wait_forever = asyncio.create_task(self._cancel_later(asyncio.Event()))
         work[wait_forever] = 10
 

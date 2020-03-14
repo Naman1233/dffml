@@ -35,8 +35,7 @@ class IDX3Source(IDX1Source):
                 data={
                     "features": {
                         self.config.feature: struct.unpack(
-                            f">{inner_array_size}B",
-                            xfile.read(inner_array_size),
+                            f">{inner_array_size}B", xfile.read(inner_array_size),
                         )
                     }
                 },

@@ -12,16 +12,12 @@ class TestLogisticRegression(IntegrationCLITestCase):
         # Make a temporary directory to store the model
         directory = self.mktempdir()
         # Create the csv data
-        d_temp = {
-            True: 1,
-            False: 0
-        }
+        d_temp = {True: 1, False: 0}
         data_filename = self.mktempfile() + ".csv"
         with open(pathlib.Path(data_filename), "w") as data_file:
             writer = csv.writer(data_file, delimiter=",")
             writer.writerow(["f1", "ans"])
-            writer.writerows(
-                [[i/10, d_temp[i/10 > 0.5]] for i in range(0, 10)])
+            writer.writerows([[i / 10, d_temp[i / 10 > 0.5]] for i in range(0, 10)])
         # Arguments for the model
         model_args = [
             "-model",

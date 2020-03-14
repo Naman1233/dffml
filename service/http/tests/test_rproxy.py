@@ -100,12 +100,8 @@ class ReverseProxyHandlerContext(object):
         ):
             # Handle websocket proxy
             try:
-                async with aiohttp.ClientSession(
-                    cookies=req.cookies
-                ) as client_session:
-                    async with client_session.ws_connect(
-                        upstream
-                    ) as ws_client:
+                async with aiohttp.ClientSession(cookies=req.cookies) as client_session:
+                    async with client_session.ws_connect(upstream) as ws_client:
                         ws_server = web.WebSocketResponse()
                         await ws_server.prepare(req)
                         self.loop.create_task(
@@ -122,9 +118,7 @@ class ReverseProxyHandlerContext(object):
                 return web.Response(status=HTTPStatus.NOT_FOUND)
         else:
             # Handle regular HTTP request proxy
-            self.logger.debug(
-                "upstream for (%r): %s", upstream, (subdomain, path)
-            )
+            self.logger.debug("upstream for (%r): %s", upstream, (subdomain, path))
             async with client.request(
                 req.method,
                 upstream,
@@ -132,13 +126,9 @@ class ReverseProxyHandlerContext(object):
                 allow_redirects=False,
                 data=await req.read(),
             ) as res:
-                self.logger.debug(
-                    "upstream url(%s) status: %d", upstream, res.status
-                )
+                self.logger.debug("upstream url(%s) status: %d", upstream, res.status)
                 return web.Response(
-                    headers=res.headers,
-                    status=res.status,
-                    body=await res.read(),
+                    headers=res.headers, status=res.status, body=await res.read(),
                 )
             return ws_server
 
@@ -153,16 +143,12 @@ class ReverseProxyHandlerContext(object):
             return False
         longest_match = ""
         for local_path, upstream in paths.items():
-            if path.startswith(local_path) and len(local_path) > len(
-                longest_match
-            ):
+            if path.startswith(local_path) and len(local_path) > len(longest_match):
                 longest_match = local_path
         if not longest_match:
             return False
         upstream = urlparse(paths[longest_match])
-        upstream = upstream._replace(
-            path=path.replace(longest_match, upstream.path)
-        )
+        upstream = upstream._replace(path=path.replace(longest_match, upstream.path))
         return upstream.geturl()
 
     async def __aenter__(self) -> "ReverseProxyHandlerContext":
@@ -199,8 +185,7 @@ async def rproxy(self, upstream_path, subdomain, path):
     rproxyh = ReverseProxyHandler(BaseConfig())
     async with rproxyh("localhost") as ctx:
         ctx.set_upstream(
-            "http://%s:%d%s"
-            % (self.server.host, self.server.port, upstream_path),
+            "http://%s:%d%s" % (self.server.host, self.server.port, upstream_path),
             subdomain="test",
             path="/route/this",
         )
@@ -214,12 +199,8 @@ class TestReverseProxyHandler(AioHTTPTestCase):
     PROXY_PATH = "/route/this"
     UPSTREAM_PATH = "/to/here"
 
-    def fake_socket_getaddrinfo(
-        host, port, family=0, type=0, proto=0, flags=0
-    ):
-        return [
-            (socket.AF_INET, socket.SOCK_STREAM, 6, "", ("127.0.0.1", port))
-        ]
+    def fake_socket_getaddrinfo(host, port, family=0, type=0, proto=0, flags=0):
+        return [(socket.AF_INET, socket.SOCK_STREAM, 6, "", ("127.0.0.1", port))]
 
     @classmethod
     def setUpClass(cls):
@@ -342,7 +323,5 @@ class TestReverseProxyHandler(AioHTTPTestCase):
                     await ws.send_str(self.UPSTREAM_PATH + "/test/joined")
                     async for msg in ws:
                         text = msg.data
-                        self.assertEqual(
-                            self.UPSTREAM_PATH + "/test/joined", text
-                        )
+                        self.assertEqual(self.UPSTREAM_PATH + "/test/joined", text)
                         await ws.close()

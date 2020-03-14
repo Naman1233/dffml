@@ -100,11 +100,7 @@ def type_name(value):
 
 def format_op_definitions(definitions):
     for key, definition in definitions.items():
-        item = "- %s: %s(type: %s)" % (
-            key,
-            definition.name,
-            definition.primitive,
-        )
+        item = "- %s: %s(type: %s)" % (key, definition.name, definition.primitive,)
         if definition.spec is not None:
             item += "\n\n"
             item += "\n".join(
@@ -129,13 +125,9 @@ def format_op(op):
     build = []
     build.append("**Stage: %s**\n\n" % (op.stage.value))
     if op.inputs:
-        build.append(
-            "**Inputs**\n\n" + "\n".join(format_op_definitions(op.inputs))
-        )
+        build.append("**Inputs**\n\n" + "\n".join(format_op_definitions(op.inputs)))
     if op.outputs:
-        build.append(
-            "**Outputs**\n\n" + "\n".join(format_op_definitions(op.outputs))
-        )
+        build.append("**Outputs**\n\n" + "\n".join(format_op_definitions(op.outputs)))
     if op.conditions:
         build.append(
             "**Conditions**\n\n"
@@ -149,9 +141,7 @@ def format_op(op):
     return "\n\n".join(build)
 
 
-def gen_docs(
-    entrypoint: str, modules: List[str], maintenance: str = "Official"
-):
+def gen_docs(entrypoint: str, modules: List[str], maintenance: str = "Official"):
     per_module = {name: [None, []] for name in modules}
     packagesconfig = configparser.ConfigParser()
     packagesconfig.read("scripts/packagesconfig.ini")
@@ -193,16 +183,8 @@ def gen_docs(
                 }
             )
             + (
-                (
-                    inspect.getdoc(module) + "\n\n"
-                    if inspect.getdoc(module)
-                    else ""
-                )
-                + (
-                    "\n\n".join(docs)
-                    if name not in packagesconfig["NO ARGS"]
-                    else ""
-                )
+                (inspect.getdoc(module) + "\n\n" if inspect.getdoc(module) else "")
+                + ("\n\n".join(docs) if name not in packagesconfig["NO ARGS"] else "")
             )
             for name, (module, docs) in per_module.items()
             if docs
@@ -211,9 +193,7 @@ def gen_docs(
 
 
 def fake_getpwuid(uid):
-    return pwd.struct_passwd(
-        ("user", "x", uid, uid, "", "/home/user", "/bin/bash",)
-    )
+    return pwd.struct_passwd(("user", "x", uid, uid, "", "/home/user", "/bin/bash",))
 
 
 def main():
@@ -235,9 +215,7 @@ def main():
 
     with unittest.mock.patch("pwd.getpwuid", new=fake_getpwuid):
 
-        if getattr(args, "entrypoint", False) and getattr(
-            args, "modules", False
-        ):
+        if getattr(args, "entrypoint", False) and getattr(args, "modules", False):
             print(gen_docs(args.entrypoint, args.modules, args.maintenance))
             return
 
@@ -247,9 +225,7 @@ def main():
                 modules = modules.split()
                 template = entrypoint.replace(".", "_") + ".rst"
                 output = os.path.join("docs", "plugins", template)
-                template = os.path.join(
-                    "scripts", "docs", "templates", template
-                )
+                template = os.path.join("scripts", "docs", "templates", template)
                 with open(template, "rb") as template_fd, open(
                     output, "wb"
                 ) as output_fd:

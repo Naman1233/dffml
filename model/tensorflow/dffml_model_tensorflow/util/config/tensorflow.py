@@ -66,13 +66,8 @@ def tensorflow_doc_to_field(type_str, description, param):
         if "." in type_str:
             type_cls = float
     else:
-        type_split = list(
-            map(lambda x: x.lower(), type_str.replace(",", "").split())
-        )
-        for (
-            tensorflow_type_name,
-            python_type,
-        ) in TENSORFLOW_DOCS_TYPE_MAP.items():
+        type_split = list(map(lambda x: x.lower(), type_str.replace(",", "").split()))
+        for (tensorflow_type_name, python_type,) in TENSORFLOW_DOCS_TYPE_MAP.items():
             if tensorflow_type_name in type_split:
                 type_cls = python_type
 
@@ -82,9 +77,7 @@ def tensorflow_doc_to_field(type_str, description, param):
     return type_cls, field(description, default=default)
 
 
-def tensorflow_cleanup_description(
-    dtypes, description_lines, last: bool = False
-):
+def tensorflow_cleanup_description(dtypes, description_lines, last: bool = False):
     if description_lines:
         # Remove the section header if we're on the last argument (since we will
         # have the title of it in the body of the last arguments description
@@ -142,12 +135,8 @@ def tensorflow_docstring_args(cls: Callable):
         if param_name in ["args", "kwargs"]:
             continue
         if not param_name in docparams:
-            raise ParameterNotInDocString(
-                f"{param_name} for {cls.__qualname__}"
-            )
-        docparams[param_name] = tensorflow_doc_to_field(
-            *docparams[param_name], param
-        )
+            raise ParameterNotInDocString(f"{param_name} for {cls.__qualname__}")
+        docparams[param_name] = tensorflow_doc_to_field(*docparams[param_name], param)
 
     return docparams
 
@@ -212,9 +201,7 @@ def parse_layers(input_layers: List[str]):
 
 
 def make_config_tensorflow(
-    name: str,
-    cls: Type,
-    properties: Optional[Dict[str, Tuple[Type, field]]] = None,
+    name: str, cls: Type, properties: Optional[Dict[str, Tuple[Type, field]]] = None,
 ):
     """
     Given a tensorflow class, read its docstring and ``__init__`` parameters to

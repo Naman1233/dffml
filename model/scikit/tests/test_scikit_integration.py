@@ -51,9 +51,7 @@ class TestScikitClassification(IntegrationCLITestCase):
             writer.writerows(predict_data)
 
         # Features
-        features = (
-            "-model-features A:float:1 B:float:1 C:float:1 D:float:1".split()
-        )
+        features = "-model-features A:float:1 B:float:1 C:float:1 D:float:1".split()
         # Train the model
         await CLI.cli(
             "train",
@@ -145,9 +143,7 @@ class TestScikitRegression(IntegrationCLITestCase):
             writer.writerows(predict_data)
 
         # Features
-        features = (
-            "-model-features A:float:1 B:float:1 C:float:1 D:float:1".split()
-        )
+        features = "-model-features A:float:1 B:float:1 C:float:1 D:float:1".split()
         # Train the model
         await CLI.cli(
             "train",
@@ -242,9 +238,7 @@ class TestScikitClustering(IntegrationCLITestCase):
             writer.writerows(predict_data)
 
         # Features
-        features = (
-            "-model-features A:float:1 B:float:1 C:float:1 D:float:1".split()
-        )
+        features = "-model-features A:float:1 B:float:1 C:float:1 D:float:1".split()
         # ind_w_labl --> inductive model with true cluster label
         # ind_wo_labl --> inductive model without true cluster label
         # tran_w_labl --> transductive model with true cluster label

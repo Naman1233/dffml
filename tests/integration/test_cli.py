@@ -15,12 +15,7 @@ class TestList(IntegrationCLITestCase):
         keys = ["A", "B", "C"]
         with contextlib.redirect_stdout(self.stdout):
             await CLI.cli(
-                "list",
-                "records",
-                "-sources",
-                "feed=memory",
-                "-source-records",
-                *keys,
+                "list", "records", "-sources", "feed=memory", "-source-records", *keys,
             )
         stdout = self.stdout.getvalue()
         for key in keys:

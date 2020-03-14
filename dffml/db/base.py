@@ -8,9 +8,7 @@ from dffml.df.base import BaseDataFlowObject, BaseDataFlowObjectContext
 from dffml.util.entrypoint import base_entry_point
 
 
-Condition = collections.namedtuple(
-    "Condtion", ["column", "operation", "value"]
-)
+Condition = collections.namedtuple("Condtion", ["column", "operation", "value"])
 Conditions = Union[List[List[Condition]], List[List[Tuple[str]]]]
 
 
@@ -29,9 +27,7 @@ class DatabaseContextConstraint(abc.ABC):
                 setattr(cls, attr, cls.sanitize(func))
 
 
-class BaseDatabaseContext(
-    BaseDataFlowObjectContext, DatabaseContextConstraint
-):
+class BaseDatabaseContext(BaseDataFlowObjectContext, DatabaseContextConstraint):
     """
     Base context class for database interaction
     """
@@ -55,9 +51,7 @@ class BaseDatabaseContext(
             if isinstance(obj, str):
                 return self.sanitize_non_bindable(obj)
             if isinstance(obj, Dict):
-                nobj = {
-                    self.sanitize_non_bindable(k): v for k, v in obj.items()
-                }
+                nobj = {self.sanitize_non_bindable(k): v for k, v in obj.items()}
                 return nobj
             if isinstance(obj, List):
                 nobj = list(map(scrub, obj))
@@ -92,9 +86,7 @@ class BaseDatabaseContext(
         return res
 
     @abc.abstractmethod
-    async def create_table(
-        self, table_name: str, cols: Dict[str, str]
-    ) -> None:
+    async def create_table(self, table_name: str, cols: Dict[str, str]) -> None:
         """
         Creates a table with name `table_name` if it doesn't exist
         """
@@ -131,17 +123,13 @@ class BaseDatabaseContext(
         """
 
     @abc.abstractmethod
-    async def remove(
-        self, table_name: str, conditions: Optional[Conditions] = None
-    ):
+    async def remove(self, table_name: str, conditions: Optional[Conditions] = None):
         """
         Removes rows (satisfying `conditions`) from `table_name`
         """
 
     @abc.abstractmethod
-    async def insert_or_update(
-        self, table_name: str, data: Dict[str, Any]
-    ) -> None:
+    async def insert_or_update(self, table_name: str, data: Dict[str, Any]) -> None:
         try:
             await self.insert(table_name, data)
         except:

@@ -33,7 +33,9 @@ class TestDNNC(IntegrationCLITestCase):
             writer.writerow(["A", "B", "C", "D", "E", "true_class"])
             writer.writerows(train_data)
         # Features
-        features = "-model-features A:float:1 B:float:1 C:float:1 D:float:1 E:float:1".split()
+        features = (
+            "-model-features A:float:1 B:float:1 C:float:1 D:float:1 E:float:1".split()
+        )
 
         # Train the model
         await CLI.cli(
@@ -116,11 +118,7 @@ class TestDNNR(IntegrationCLITestCase):
 
         data_filename = self.mktempfile() + ".csv"
         X, y = make_regression(
-            n_samples=10,
-            n_features=6,
-            n_targets=1,
-            shuffle=True,
-            random_state=2020,
+            n_samples=10, n_features=6, n_targets=1, shuffle=True, random_state=2020,
         )
         train_data = np.concatenate((X, y[:, None]), axis=1)
         with open(pathlib.Path(data_filename), "w+") as data_file:

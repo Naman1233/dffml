@@ -40,9 +40,7 @@ class TextClassifierConfig:
     predict: Feature = field("Feature name holding classification value")
     classifications: List[str] = field("Options for value of classification")
     features: Features = field("Features to train on")
-    trainable: str = field(
-        "Tweak pretrained model by training again", default=True
-    )
+    trainable: str = field("Tweak pretrained model by training again", default=True)
     batch_size: int = field("Batch size", default=120)
     max_seq_length: int = field(
         "Length of sentence, used in preprocessing of input for bert embedding",
@@ -126,9 +124,7 @@ class TextClassifierContext(ModelContext):
             raise NotADirectoryError(
                 "%s is not a directory" % (self.parent.config.directory)
             )
-        os.makedirs(
-            os.path.join(self.parent.config.directory, model), exist_ok=True
-        )
+        os.makedirs(os.path.join(self.parent.config.directory, model), exist_ok=True)
         return os.path.join(self.parent.config.directory, model)
 
     def _mkcids(self, classifications):
@@ -136,9 +132,7 @@ class TextClassifierContext(ModelContext):
         Create an index, possible classification mapping and sort the list of
         classifications first.
         """
-        cids = dict(
-            zip(range(0, len(classifications)), sorted(classifications))
-        )
+        cids = dict(zip(range(0, len(classifications)), sorted(classifications)))
         self.logger.debug("cids(%d): %r", len(cids), cids)
         return cids
 
@@ -179,9 +173,7 @@ class TextClassifierContext(ModelContext):
             len(self.cids),
         ]:
             raise OutputShapeError(
-                "Output shape of last layer should be:{}".format(
-                    (None, len(self.cids))
-                )
+                "Output shape of last layer should be:{}".format((None, len(self.cids)))
             )
         return self._model
 
@@ -191,18 +183,14 @@ class TextClassifierContext(ModelContext):
         x_cols: Dict[str, Any] = {feature: [] for feature in self.features}
         y_cols = []
         all_records = []
-        all_sources = sources.with_features(
-            self.features + [self.classification]
-        )
+        all_sources = sources.with_features(self.features + [self.classification])
         async for record in all_sources:
             if record.feature(self.classification) in self.classifications:
                 all_records.append(record)
         for record in all_records:
             for feature, results in record.features(self.features).items():
                 x_cols[feature].append(np.array(results))
-            y_cols.append(
-                self.classifications[record.feature(self.classification)]
-            )
+            y_cols.append(self.classifications[record.feature(self.classification)])
         if not y_cols:
             raise ValueError("No records to train on")
         y_cols = np.array(y_cols)
@@ -227,9 +215,7 @@ class TextClassifierContext(ModelContext):
                 self._model.do_lower_case.numpy(),
             )
             x_cols = dict(
-                input_word_ids=x_cols[0],
-                input_mask=x_cols[1],
-                segment_ids=x_cols[2],
+                input_word_ids=x_cols[0], input_mask=x_cols[1], segment_ids=x_cols[2],
             )
         else:
             # Universal Sentence Encoder, Neural Network Language Model, Swivel Embeddings
@@ -250,9 +236,7 @@ class TextClassifierContext(ModelContext):
                 self._model.do_lower_case.numpy(),
             )
             x_cols = dict(
-                input_word_ids=x_cols[0],
-                input_mask=x_cols[1],
-                segment_ids=x_cols[2],
+                input_word_ids=x_cols[0], input_mask=x_cols[1], segment_ids=x_cols[2],
             )
         return x_cols
 
@@ -276,9 +260,7 @@ class TextClassifierContext(ModelContext):
         Evaluates the accuracy of our model after training using the input records
         as test data.
         """
-        if not os.path.isfile(
-            os.path.join(self.model_dir_path, "saved_model.pb")
-        ):
+        if not os.path.isfile(os.path.join(self.model_dir_path, "saved_model.pb")):
             raise ModelNotTrained("Train model before assessing for accuracy.")
         x, y = await self.train_data_generator(sources)
         accuracy_score = self._model.evaluate(x, y)
@@ -290,9 +272,7 @@ class TextClassifierContext(ModelContext):
         """
         Uses trained data to make a prediction about the quality of a record.
         """
-        if not os.path.isfile(
-            os.path.join(self.model_dir_path, "saved_model.pb")
-        ):
+        if not os.path.isfile(os.path.join(self.model_dir_path, "saved_model.pb")):
             raise ModelNotTrained("Train model before assessing for accuracy.")
 
         async for record in records:
@@ -304,16 +284,12 @@ class TextClassifierContext(ModelContext):
             target = self.parent.config.predict.NAME
             self.logger.debug(
                 "Predicted probability of {} for {}: {}".format(
-                    self.parent.config.predict.NAME,
-                    np.array(df)[0],
-                    all_prob[0],
+                    self.parent.config.predict.NAME, np.array(df)[0], all_prob[0],
                 )
             )
 
             record.predicted(
-                target,
-                self.cids[max_prob_idx[0]],
-                all_prob[0][max_prob_idx[0]],
+                target, self.cids[max_prob_idx[0]], all_prob[0][max_prob_idx[0]],
             )
             yield record
 

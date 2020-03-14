@@ -152,9 +152,7 @@ class Entrypoint(object):
                 if loading is not None and i.name == loading:
                     return loaded
         if loading is not None:
-            raise EntrypointNotFound(
-                f"{loading!r} was not found in: {loaded_names}"
-            )
+            raise EntrypointNotFound(f"{loading!r} was not found in: {loaded_names}")
         return loading_classes
 
     @classmethod
@@ -179,11 +177,8 @@ class Entrypoint(object):
         else:
             raise MissingLabel(
                 "%r is missing a label. "
-                "Correct syntax: label=%s"
-                % (label_and_loading, label_and_loading)
+                "Correct syntax: label=%s" % (label_and_loading, label_and_loading)
             )
 
         loaded = cls.load(loading)
-        return type(
-            loaded.__qualname__, (loaded,), {"ENTRY_POINT_LABEL": label}
-        )
+        return type(loaded.__qualname__, (loaded,), {"ENTRY_POINT_LABEL": label})

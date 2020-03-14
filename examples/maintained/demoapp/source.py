@@ -48,9 +48,7 @@ class DemoAppSourceContext(BaseSourceContext):
         dump = await db.fetchone()
         if dump is not None and dump[0] is not None:
             record.merge(Record(key, data=json.loads(dump[0])))
-        await db.execute(
-            "SELECT maintained FROM `status` WHERE key=%s", (key,)
-        )
+        await db.execute("SELECT maintained FROM `status` WHERE key=%s", (key,))
         maintained = await db.fetchone()
         if maintained is not None and maintained[0] is not None:
             record.evaluated({"maintained": str(maintained[0])})

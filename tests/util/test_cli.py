@@ -37,9 +37,7 @@ class TestParseActions(unittest.TestCase):
         with self.subTest(multiple=dest):
             action = parser(dest=dest, option_strings="")
             action(None, namespace, ["feed", "face"])
-            self.assertEqual(
-                getattr(namespace, dest, False), Features("feed", "face")
-            )
+            self.assertEqual(getattr(namespace, dest, False), Features("feed", "face"))
 
     def test_logging(self):
         namespace = Namespace(log=False)
@@ -68,8 +66,7 @@ class TestJSONEncoder(unittest.TestCase):
             pass
 
         self.assertIn(
-            "UnregisteredObject",
-            json.dumps(UnregisteredObject, cls=JSONEncoder),
+            "UnregisteredObject", json.dumps(UnregisteredObject, cls=JSONEncoder),
         )
 
     def test_record(self):
@@ -168,12 +165,8 @@ class TestCMD(AsyncTestCase):
         class Primary(CMD):
             secondary = Secondary
 
-        with patch.object(json, "dump") as mock_method, patch(
-            "builtins.print"
-        ):
-            Primary.main(
-                loop=asyncio.new_event_loop(), argv=["t", "secondary"]
-            )
+        with patch.object(json, "dump") as mock_method, patch("builtins.print"):
+            Primary.main(loop=asyncio.new_event_loop(), argv=["t", "secondary"])
             mock_method.assert_called_once()
 
 

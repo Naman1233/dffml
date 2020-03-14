@@ -35,9 +35,7 @@ class BaseDataFlowObjectContext(BaseDataFlowFacilitatorObjectContext):
     config, and their parent, a BaseDataFlowObject.
     """
 
-    def __init__(
-        self, config: BaseConfig, parent: "BaseDataFlowObject"
-    ) -> None:
+    def __init__(self, config: BaseConfig, parent: "BaseDataFlowObject") -> None:
         self.config = config
         self.parent = parent
 
@@ -114,8 +112,7 @@ class OperationImplementation(BaseDataFlowObject):
         super().__init__(config)
         if not getattr(self, "op", False):
             raise ValueError(
-                "OperationImplementation's may not be "
-                + "created without an `op`"
+                "OperationImplementation's may not be " + "created without an `op`"
             )
 
     def __call__(
@@ -225,9 +222,7 @@ def op(imp_enter=None, ctx_enter=None, config_cls=None, **kwargs):
 
         func.test = test
 
-        class Implementation(
-            context_stacker(OperationImplementation, imp_enter)
-        ):
+        class Implementation(context_stacker(OperationImplementation, imp_enter)):
             def __init__(self, config):
                 if config_cls is not None and isinstance(config, dict):
                     if getattr(config_cls, "_fromdict", None) is not None:
@@ -241,9 +236,7 @@ def op(imp_enter=None, ctx_enter=None, config_cls=None, **kwargs):
         if config_cls is not None:
             Implementation.CONFIG = config_cls
 
-        if inspect.isclass(func) and issubclass(
-            func, OperationImplementationContext
-        ):
+        if inspect.isclass(func) and issubclass(func, OperationImplementationContext):
             func.imp = type(
                 f"{cls_name}Implementation",
                 (Implementation,),
@@ -357,8 +350,7 @@ def mk_base_in(predicate):
     def base_in(to_check):
         return list(
             map(
-                lambda item: item[1],
-                inspect.getmembers(to_check, predicate=predicate),
+                lambda item: item[1], inspect.getmembers(to_check, predicate=predicate),
             )
         )
 
@@ -473,9 +465,7 @@ class BaseInputSet(abc.ABC):
         """
         Returns an input definition name to input value dict
         """
-        return {
-            item.definition.name: item.value async for item in self.inputs()
-        }
+        return {item.definition.name: item.value async for item in self.inputs()}
 
 
 class BaseParameterSetConfig(NamedTuple):
@@ -500,10 +490,7 @@ class BaseParameterSet(abc.ABC):
         """
         Returns an parameter definition name to parameter value dict
         """
-        return {
-            parameter.key: parameter.value
-            async for parameter in self.parameters()
-        }
+        return {parameter.key: parameter.value async for parameter in self.parameters()}
 
 
 class BaseDefinitionSetContext(BaseDataFlowObjectContext):
@@ -548,9 +535,7 @@ class BaseInputNetworkContext(BaseDataFlowObjectContext):
         """
 
     @abc.abstractmethod
-    async def definition(
-        self, ctx: BaseInputSetContext, definition: str
-    ) -> Definition:
+    async def definition(self, ctx: BaseInputSetContext, definition: str) -> Definition:
         """
         Search for the definition within a context given its name as a string.
         Return the definition. Otherwise raise a DefinitionNotInContext
@@ -697,9 +682,7 @@ class BaseOperationImplementationNetworkContext(BaseDataFlowObjectContext):
         """
 
     @abc.abstractmethod
-    async def instantiate(
-        self, operation: Operation, config: BaseConfig
-    ) -> bool:
+    async def instantiate(self, operation: Operation, config: BaseConfig) -> bool:
         """
         Instantiate a given operation so that it can be run within this network.
         """

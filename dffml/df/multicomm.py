@@ -74,9 +74,7 @@ class BaseMultiCommContext(BaseDataFlowObjectContext, abc.ABC):
                 continue
             yield path
 
-    async def register_directory(
-        self, directory: Union[pathlib.Path, str]
-    ) -> None:
+    async def register_directory(self, directory: Union[pathlib.Path, str]) -> None:
         """
         Register all configs found in a directory
         """

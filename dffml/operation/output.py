@@ -37,9 +37,7 @@ class GroupBySpec(NamedTuple):
 
 group_by_spec = Definition(name="group_by_spec", primitive="Dict[str, Any]")
 
-group_by_output = Definition(
-    name="group_by_output", primitive="Dict[str, List[Any]]"
-)
+group_by_output = Definition(name="group_by_output", primitive="Dict[str, List[Any]]")
 
 
 @op(
@@ -138,9 +136,7 @@ class GetSingle(OperationImplementationContext):
 
 associate_spec = Definition(name="associate_spec", primitive="List[str]")
 
-associate_output = Definition(
-    name="associate_output", primitive="Dict[str, Any]"
-)
+associate_output = Definition(name="associate_output", primitive="Dict[str, Any]")
 
 
 @op(
@@ -200,15 +196,11 @@ class RemapFailure(Exception):
     stage=Stage.OUTPUT,
     config_cls=RemapConfig,
 )
-async def remap(
-    self: OperationImplementationContext, spec: Dict[str, List[str]]
-):
+async def remap(self: OperationImplementationContext, spec: Dict[str, List[str]]):
     # Create a new orchestrator context. Specify that it should use the existing
     # input set context, this way the output operations we'll be running have
     # access to the data from this data flow rather than a new sub flow.
-    async with self.octx.parent(
-        self.config.dataflow, ictx=self.octx.ictx
-    ) as octx:
+    async with self.octx.parent(self.config.dataflow, ictx=self.octx.ictx) as octx:
         _ctx, result = [result async for result in octx.run(ctx=self.ctx)][0]
     # Remap the output operations to their feature (copied logic
     # from CLI)

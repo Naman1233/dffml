@@ -47,9 +47,7 @@ class TestDataFlowDiagram(TestDataFlow):
         with contextlib.redirect_stdout(self.stdout):
             await CLI.cli("dataflow", "diagram", "-simple", filename)
         # Check that a subgraph is not being made for each operation
-        self.assertFalse(
-            re.findall(r"subgraph.*run_bandit", self.stdout.getvalue())
-        )
+        self.assertFalse(re.findall(r"subgraph.*run_bandit", self.stdout.getvalue()))
 
     async def test_single_stage(self):
         filename = self.mktempfile() + ".json"
@@ -100,9 +98,7 @@ class TestDataFlowMerge(TestDataFlow):
         )
         # Create new dataflow
         override = DataFlow.auto(
-            transform_to_record,
-            lines_of_code_by_language,
-            lines_of_code_to_comments,
+            transform_to_record, lines_of_code_by_language, lines_of_code_to_comments,
         )
         # TODO Modify and compare against yaml in docs example
         # Write out override dataflow
@@ -124,17 +120,14 @@ class TestDataFlowMerge(TestDataFlow):
         dataflow.seed.append(
             Input(
                 value=[
-                    definition.name
-                    for definition in model_predict.op.outputs.values()
+                    definition.name for definition in model_predict.op.outputs.values()
                 ],
                 definition=get_single.inputs["spec"],
             )
         )
         # Write out the dataflow
         dataflow_yaml = pathlib.Path(self.mktempfile() + ".yaml")
-        async with BaseConfigLoader.load("yaml").withconfig(
-            {}
-        ) as configloader:
+        async with BaseConfigLoader.load("yaml").withconfig({}) as configloader:
             async with configloader() as loader:
                 dataflow_yaml.write_bytes(
                     await loader.dumpb(dataflow.export(linked=True))

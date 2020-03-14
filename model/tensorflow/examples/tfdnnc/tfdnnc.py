@@ -25,18 +25,8 @@ print("Accuracy:", accuracy(model, CSVSource(filename="iris_test.csv")))
 # Make prediction
 for i, features, prediction in predict(
     model,
-    {
-        "PetalLength": 4.2,
-        "PetalWidth": 1.5,
-        "SepalLength": 5.9,
-        "SepalWidth": 3.0,
-    },
-    {
-        "PetalLength": 5.4,
-        "PetalWidth": 2.1,
-        "SepalLength": 6.9,
-        "SepalWidth": 3.1,
-    },
+    {"PetalLength": 4.2, "PetalWidth": 1.5, "SepalLength": 5.9, "SepalWidth": 3.0,},
+    {"PetalLength": 5.4, "PetalWidth": 2.1, "SepalLength": 6.9, "SepalWidth": 3.1,},
 ):
     features["classification"] = prediction["classification"]["value"]
     print(features)

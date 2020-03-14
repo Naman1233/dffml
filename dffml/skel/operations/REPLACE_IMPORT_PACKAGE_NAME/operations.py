@@ -14,9 +14,7 @@ async def calc_add(numbers: List[int]):
 
 
 @op(
-    inputs={"numbers": numbers},
-    outputs={"product": result},
-    conditions=[is_mult],
+    inputs={"numbers": numbers}, outputs={"product": result}, conditions=[is_mult],
 )
 async def calc_mult(numbers: List[int]):
     """

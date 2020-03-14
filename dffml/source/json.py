@@ -56,9 +56,7 @@ class JSONSource(FileSource, MemorySource):
                     data={}, active=1, lock=asyncio.Lock()
                 )
                 if fd is not None:
-                    self.OPEN_JSON_FILES[
-                        self.config.filename
-                    ].data = json.load(fd)
+                    self.OPEN_JSON_FILES[self.config.filename].data = json.load(fd)
             else:
                 self.logger.debug(f"{self.config.filename} already open")
                 await self.OPEN_JSON_FILES[self.config.filename].inc()

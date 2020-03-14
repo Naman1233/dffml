@@ -52,17 +52,11 @@ class TestQuickstart(unittest.TestCase):
             # Run training
             subprocess.check_output(["sh", sh_filepath("train.sh")])
             # Check the Accuracy
-            stdout = subprocess.check_output(
-                ["sh", sh_filepath("accuracy.sh")]
-            )
+            stdout = subprocess.check_output(["sh", sh_filepath("accuracy.sh")])
             self.assertEqual(stdout.decode().strip(), "1.0")
             # Make the prediction
             stdout = subprocess.check_output(["sh", sh_filepath("predict.sh")])
             records = json.loads(stdout.decode())
             # Check the salary
-            self.assertEqual(
-                int(records[0]["prediction"]["Salary"]["value"]), 70
-            )
-            self.assertEqual(
-                int(records[1]["prediction"]["Salary"]["value"]), 80
-            )
+            self.assertEqual(int(records[0]["prediction"]["Salary"]["value"]), 70)
+            self.assertEqual(int(records[1]["prediction"]["Salary"]["value"]), 80)

@@ -32,23 +32,17 @@ class MySQLSourceContext(BaseSourceContext):
         for key in model_columns:
             if key.startswith("feature_"):
                 modified_key = key.replace("feature_", "")
-                key_value_pairs[modified_key] = record.data.features[
-                    modified_key
-                ]
+                key_value_pairs[modified_key] = record.data.features[modified_key]
             elif "_value" in key:
                 target = key.replace("_value", "")
                 if record.data.prediction:
-                    key_value_pairs[key] = record.data.prediction[target][
-                        "value"
-                    ]
+                    key_value_pairs[key] = record.data.prediction[target]["value"]
                 else:
                     key_value_pairs[key] = "undetermined"
             elif "_confidence" in key:
                 target = key.replace("_confidence", "")
                 if record.data.prediction:
-                    key_value_pairs[key] = record.data.prediction[target][
-                        "confidence"
-                    ]
+                    key_value_pairs[key] = record.data.prediction[target]["confidence"]
                 else:
                     key_value_pairs[key] = 1
             else:
@@ -67,9 +61,7 @@ class MySQLSourceContext(BaseSourceContext):
         }
         for key, value in result.items():
             if key.startswith("feature_"):
-                modified_record["data"]["features"][
-                    key.replace("feature_", "")
-                ] = value
+                modified_record["data"]["features"][key.replace("feature_", "")] = value
             elif ("_value" in key) or ("_confidence" in key):
                 target = key.replace("_value", "").replace("_confidence", "")
                 modified_record["data"]["prediction"][target] = {
@@ -108,8 +100,7 @@ class MySQLSourceContext(BaseSourceContext):
                     }
             record.merge(
                 Record(
-                    row["key"],
-                    data={"features": features, "prediction": predictions},
+                    row["key"], data={"features": features, "prediction": predictions},
                 )
             )
         return record
@@ -133,9 +124,7 @@ class MySQLSource(BaseSource):
         # Verify MySQL connection using provided certificate, if given
         ssl_ctx = None
         if self.config.ca is not None:
-            self.logger.debug(
-                f"Secure connection to MySQL: CA file: {self.config.ca}"
-            )
+            self.logger.debug(f"Secure connection to MySQL: CA file: {self.config.ca}")
             ssl_ctx = ssl.create_default_context(cafile=self.config.ca)
         else:
             self.logger.critical("Insecure connection to MySQL")

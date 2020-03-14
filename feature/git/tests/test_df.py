@@ -23,18 +23,12 @@ class TestRunner(AsyncTestCase):
         # Instantiate inputs
         repos = glob.glob(
             os.path.join(
-                os.path.expanduser("~"),
-                "Documents",
-                "python",
-                "testrepos",
-                "*",
+                os.path.expanduser("~"), "Documents", "python", "testrepos", "*",
             )
         )
         if not repos:
             repos = glob.glob(
-                os.path.join(
-                    os.path.expanduser("~"), "Documents", "python", "dffml"
-                )
+                os.path.join(os.path.expanduser("~"), "Documents", "python", "dffml")
             )
         if not repos:
             repos = [
@@ -43,9 +37,7 @@ class TestRunner(AsyncTestCase):
             ]
         repos = repos[:2]
         urls = [
-            Input(
-                value=URL, definition=dataflow.definitions["URL"], parents=None
-            )
+            Input(value=URL, definition=dataflow.definitions["URL"], parents=None)
             for URL in repos
         ]
         no_git_branch_given = Input(
@@ -59,11 +51,7 @@ class TestRunner(AsyncTestCase):
             parents=None,
         )
         quarters = [
-            Input(
-                value=i,
-                definition=dataflow.definitions["quarter"],
-                parents=None,
-            )
+            Input(value=i, definition=dataflow.definitions["quarter"], parents=None,)
             for i in range(0, 10)
         ]
 
@@ -74,22 +62,14 @@ class TestRunner(AsyncTestCase):
                     "by": "language_to_comment_ratio",
                     "fill": 0,
                 },
-                "authors": {
-                    "group": "quarter",
-                    "by": "author_count",
-                    "fill": 0,
-                },
+                "authors": {"group": "quarter", "by": "author_count", "fill": 0,},
                 "work": {"group": "quarter", "by": "work_spread", "fill": 0},
                 "release": {
                     "group": "quarter",
                     "by": "release_within_period",
                     "fill": False,
                 },
-                "commits": {
-                    "group": "quarter",
-                    "by": "commit_count",
-                    "fill": 0,
-                },
+                "commits": {"group": "quarter", "by": "commit_count", "fill": 0,},
             },
             definition=dataflow.definitions["group_by_spec"],
             parents=None,

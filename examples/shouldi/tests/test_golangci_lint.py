@@ -46,8 +46,7 @@ class TestRunGolangci_lintOp(AsyncTestCase):
         os.environ["GOPATH"] = str(cri_resource_manager / ".gopath")
         os.environ["GOBIN"] = str(cri_resource_manager / ".gopath" / "bin")
         with prepend_to_path(
-            golang / "go" / "bin",
-            golangci_lint / "golangci-lint-1.23.7-linux-amd64",
+            golang / "go" / "bin", golangci_lint / "golangci-lint-1.23.7-linux-amd64",
         ):
             results = await run_golangci_lint(
                 str(

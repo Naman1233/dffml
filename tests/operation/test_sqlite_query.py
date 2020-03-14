@@ -20,9 +20,7 @@ class TestSqliteQuery(AsyncTestCase):
         super().setUpClass()
         fileno, cls.database_name = tempfile.mkstemp(suffix=".db")
         os.close(fileno)
-        cls.sdb = SqliteDatabase(
-            SqliteDatabaseConfig(filename=cls.database_name)
-        )
+        cls.sdb = SqliteDatabase(SqliteDatabaseConfig(filename=cls.database_name))
 
     @classmethod
     def tearDownClass(cls):
@@ -45,10 +43,7 @@ class TestSqliteQuery(AsyncTestCase):
 
     def _create_dataflow_with_op(self, query_op, seed=[]):
         return DataFlow(
-            operations={
-                "db_query": query_op.op,
-                "get_single": GetSingle.imp.op,
-            },
+            operations={"db_query": query_op.op, "get_single": GetSingle.imp.op,},
             configs={"db_query": DatabaseQueryConfig(database=self.sdb)},
             seed=seed,
             implementations={query_op.op.name: query_op.imp},
@@ -57,9 +52,7 @@ class TestSqliteQuery(AsyncTestCase):
     async def test_0_create(self):
 
         df = self._create_dataflow_with_op(db_query_create_table)
-        test_inputs = {
-            "create": {"table_name": self.table_name, "cols": self.cols}
-        }
+        test_inputs = {"create": {"table_name": self.table_name, "cols": self.cols}}
 
         async with MemoryOrchestrator.withconfig({}) as orchestrator:
             async with orchestrator(df) as octx:
@@ -68,9 +61,7 @@ class TestSqliteQuery(AsyncTestCase):
                         test_ctx: [
                             Input(
                                 value=val,
-                                definition=db_query_create_table.op.inputs[
-                                    key
-                                ],
+                                definition=db_query_create_table.op.inputs[key],
                             )
                             for key, val in test_val.items()
                         ]
@@ -90,9 +81,7 @@ class TestSqliteQuery(AsyncTestCase):
 
         df = self._create_dataflow_with_op(db_query_insert)
         for _data in self.data_dicts:
-            test_inputs = {
-                "insert": {"table_name": self.table_name, "data": _data}
-            }
+            test_inputs = {"insert": {"table_name": self.table_name, "data": _data}}
 
             async with MemoryOrchestrator.withconfig({}) as orchestrator:
                 async with orchestrator(df) as octx:
@@ -125,11 +114,7 @@ class TestSqliteQuery(AsyncTestCase):
         ]
         df = self._create_dataflow_with_op(db_query_lookup, seed=seed)
         test_inputs = {
-            "lookup": {
-                "table_name": self.table_name,
-                "cols": [],
-                "conditions": [],
-            }
+            "lookup": {"table_name": self.table_name, "cols": [], "conditions": [],}
         }
 
         async with MemoryOrchestrator.withconfig({}) as orchestrator:
@@ -137,10 +122,7 @@ class TestSqliteQuery(AsyncTestCase):
                 async for _ctx, results in octx.run(
                     {
                         test_ctx: [
-                            Input(
-                                value=val,
-                                definition=db_query_lookup.op.inputs[key],
-                            )
+                            Input(value=val, definition=db_query_lookup.op.inputs[key],)
                             for key, val in test_val.items()
                         ]
                         for test_ctx, test_val in test_inputs.items()

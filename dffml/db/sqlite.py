@@ -15,9 +15,7 @@ class SqliteDatabaseConfig:
 
 
 class SqliteDatabaseContext(SQLDatabaseContext):
-    async def create_table(
-        self, table_name: str, cols: Dict[str, str]
-    ) -> None:
+    async def create_table(self, table_name: str, cols: Dict[str, str]) -> None:
         query = self.create_table_query(table_name, cols)
         self.logger.debug(query)
         self.parent.cursor.execute(query)
@@ -35,9 +33,7 @@ class SqliteDatabaseContext(SQLDatabaseContext):
         data: Dict[str, Any],
         conditions: Optional[Conditions] = None,
     ) -> None:
-        query, query_values = self.update_query(
-            table_name, data, conditions=conditions
-        )
+        query, query_values = self.update_query(table_name, data, conditions=conditions)
         async with self.parent.lock:
             with self.parent.db:
                 self.logger.debug(query)
@@ -59,12 +55,8 @@ class SqliteDatabaseContext(SQLDatabaseContext):
                 for row in self.parent.cursor.fetchall():
                     yield dict(row)
 
-    async def remove(
-        self, table_name: str, conditions: Optional[Conditions] = None
-    ):
-        query, query_values = self.remove_query(
-            table_name, conditions=conditions
-        )
+    async def remove(self, table_name: str, conditions: Optional[Conditions] = None):
+        query, query_values = self.remove_query(table_name, conditions=conditions)
         async with self.parent.lock:
             with self.parent.db:
                 self.logger.debug(query)

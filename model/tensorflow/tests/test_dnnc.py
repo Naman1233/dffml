@@ -48,9 +48,7 @@ class TestDNN(AsyncTestCase):
             )
             for _ in range(0, 1000)
         ]
-        cls.sources = Sources(
-            MemorySource(MemorySourceConfig(records=cls.records))
-        )
+        cls.sources = Sources(MemorySource(MemorySourceConfig(records=cls.records)))
         cls.model = DNNClassifierModel(
             DNNClassifierModelConfig(
                 directory=cls.model_dir.name,
@@ -84,8 +82,7 @@ class TestDNN(AsyncTestCase):
             )
         )
         self.assertEqual(
-            config.directory,
-            pathlib.Path("~", ".cache", "dffml", "tensorflow"),
+            config.directory, pathlib.Path("~", ".cache", "dffml", "tensorflow"),
         )
         self.assertEqual(config.steps, 3000)
         self.assertEqual(config.epochs, 30)

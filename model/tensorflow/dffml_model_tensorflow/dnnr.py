@@ -72,12 +72,7 @@ class DNNRegressionModelContext(TensorflowModelContext):
         return self._model
 
     async def training_input_fn(
-        self,
-        sources: Sources,
-        batch_size=20,
-        shuffle=False,
-        epochs=1,
-        **kwargs,
+        self, sources: Sources, batch_size=20, shuffle=False, epochs=1, **kwargs,
     ):
         """
         Uses the numpy input function with data from record features.
@@ -110,12 +105,7 @@ class DNNRegressionModelContext(TensorflowModelContext):
         return input_fn
 
     async def evaluate_input_fn(
-        self,
-        sources: Sources,
-        batch_size=20,
-        shuffle=False,
-        epochs=1,
-        **kwargs,
+        self, sources: Sources, batch_size=20, shuffle=False, epochs=1, **kwargs,
     ):
         """
         Uses the numpy input function with data from record features.
@@ -158,9 +148,7 @@ class DNNRegressionModelContext(TensorflowModelContext):
         metrics = self.model.evaluate(input_fn=input_fn)
         return Accuracy(1 - metrics["loss"])  # 1 - mse
 
-    async def predict(
-        self, records: AsyncIterator[Record]
-    ) -> AsyncIterator[Record]:
+    async def predict(self, records: AsyncIterator[Record]) -> AsyncIterator[Record]:
         """
         Uses trained data to make a prediction about the quality of a record.
         """
@@ -174,9 +162,7 @@ class DNNRegressionModelContext(TensorflowModelContext):
         target = self.parent.config.predict.NAME
         for record, pred_dict in zip(predict_record, predictions):
             # TODO Instead of float("nan") save accuracy value and use that.
-            record.predicted(
-                target, float(pred_dict["predictions"]), float("nan")
-            )
+            record.predicted(target, float(pred_dict["predictions"]), float("nan"))
             yield record
 
 

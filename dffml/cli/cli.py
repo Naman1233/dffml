@@ -54,15 +54,13 @@ class Merge(CMD):
         "dest", help="Sources merge records into", type=BaseSource.load_labeled
     )
     arg_src = Arg(
-        "src",
-        help="Sources to pull records from",
-        type=BaseSource.load_labeled,
+        "src", help="Sources to pull records from", type=BaseSource.load_labeled,
     )
 
     async def run(self):
-        async with self.src.withconfig(
+        async with self.src.withconfig(self.extra_config) as src, self.dest.withconfig(
             self.extra_config
-        ) as src, self.dest.withconfig(self.extra_config) as dest:
+        ) as dest:
             async with src() as sctx, dest() as dctx:
                 async for src in sctx.records():
                     record = Record(src.key)

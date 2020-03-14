@@ -59,9 +59,7 @@ class SourcesCMD(CMD):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # Correct type of sources list if its a list and not Sources
-        if not isinstance(self.sources, Sources) and isinstance(
-            self.sources, list
-        ):
+        if not isinstance(self.sources, Sources) and isinstance(self.sources, list):
             self.sources = Sources(*self.sources)
         # Go through the list of sources and instantiate them with a config
         # created from loading their arguments from cmd (self).
@@ -75,9 +73,7 @@ class ModelCMD(CMD):
     Set a models model dir.
     """
 
-    arg_model = Arg(
-        "-model", help="Model used for ML", type=Model.load, required=True
-    )
+    arg_model = Arg("-model", help="Model used for ML", type=Model.load, required=True)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

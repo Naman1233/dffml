@@ -77,9 +77,7 @@ setup(
         ],
         "dffml.port": ["json = dffml.port.json:JSON"],
         "dffml.service.cli": ["dev = dffml.service.dev:Develop"],
-        "dffml.configloader": [
-            "json = dffml.configloader.json:JSONConfigLoader"
-        ],
+        "dffml.configloader": ["json = dffml.configloader.json:JSONConfigLoader"],
         # Data Flow
         "dffml.operation": [
             # Output
@@ -96,9 +94,7 @@ setup(
         ],
         "dffml.kvstore": ["memory = dffml.df.memory:MemoryKeyValueStore"],
         "dffml.input.network": ["memory = dffml.df.memory:MemoryInputNetwork"],
-        "dffml.operation.network": [
-            "memory = dffml.df.memory:MemoryOperationNetwork"
-        ],
+        "dffml.operation.network": ["memory = dffml.df.memory:MemoryOperationNetwork"],
         "dffml.redundancy.checker": [
             "memory = dffml.df.memory:MemoryRedundancyChecker"
         ],

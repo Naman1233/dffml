@@ -18,9 +18,7 @@ INSTALL_REQUIRES = ["aiohttp>=3.5.4", "aiohttp_cors>=0.7.0"] + (
                 os.path.isfile,
                 list(
                     map(
-                        lambda syspath: os.path.join(
-                            syspath, "dffml.egg-link"
-                        ),
+                        lambda syspath: os.path.join(syspath, "dffml.egg-link"),
                         sys.path,
                     )
                 ),
@@ -75,7 +73,5 @@ setup(
     include_package_data=True,
     zip_safe=False,
     packages=find_packages(),
-    entry_points={
-        "dffml.service.cli": [f"http = {IMPORT_NAME}.cli:HTTPService"]
-    },
+    entry_points={"dffml.service.cli": [f"http = {IMPORT_NAME}.cli:HTTPService"]},
 )

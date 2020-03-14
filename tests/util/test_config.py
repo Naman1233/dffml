@@ -13,8 +13,7 @@ class TestMakeConfig(unittest.TestCase):
         dtype, field = args["super_cool_arg"]
         self.assertEqual(dtype, str)
         self.assertEqual(
-            field.metadata["description"],
-            "Argument we want the string value of.",
+            field.metadata["description"], "Argument we want the string value of.",
         )
 
         self.assertIn("other_very_cool_arg", args)

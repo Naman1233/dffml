@@ -15,9 +15,7 @@ from dffml.util.cli.arg import parse_unknown
 class TestCSVSource(FileSourceTest, AsyncTestCase):
     async def setUpSource(self):
         return CSVSource(
-            CSVSourceConfig(
-                filename=self.testfile, allowempty=True, readwrite=True
-            )
+            CSVSourceConfig(filename=self.testfile, allowempty=True, readwrite=True)
         )
 
     async def test_tag(self):
@@ -28,12 +26,8 @@ class TestCSVSource(FileSourceTest, AsyncTestCase):
             tagged.config = tagged.config._replace(tag="sometag")
             async with untagged, tagged:
                 async with untagged() as uctx, tagged() as lctx:
-                    await uctx.update(
-                        Record("0", data={"features": {"feed": 1}})
-                    )
-                    await lctx.update(
-                        Record("0", data={"features": {"face": 2}})
-                    )
+                    await uctx.update(Record("0", data={"features": {"feed": 1}}))
+                    await lctx.update(Record("0", data={"features": {"face": 2}}))
                 # async with untagged, tagged:
                 async with untagged() as uctx, tagged() as lctx:
                     record = await uctx.record("0")
@@ -53,9 +47,7 @@ class TestCSVSource(FileSourceTest, AsyncTestCase):
                 self.assertEqual("2", rows["sometag"]["0"]["face"])
 
     def test_config_default(self):
-        config = CSVSource.config(
-            parse_unknown("--source-csv-filename", "feedface")
-        )
+        config = CSVSource.config(parse_unknown("--source-csv-filename", "feedface"))
         self.assertEqual(config.filename, "feedface")
         self.assertEqual(config.tag, "untagged")
         self.assertEqual(config.tagcol, "tag")

@@ -6,9 +6,7 @@ from dffml.df.base import op
 from dffml.df.types import Definition
 
 package_src_dir = Definition(name="package_src_dir", primitive="str")
-npm_audit_output = Definition(
-    name="npm_audit_output", primitive="Dict[str, Any]"
-)
+npm_audit_output = Definition(name="npm_audit_output", primitive="Dict[str, Any]")
 
 
 class NPM_AuditError(Exception):

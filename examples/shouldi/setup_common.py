@@ -18,9 +18,7 @@ INSTALL_REQUIRES = [] + (
                 os.path.isfile,
                 list(
                     map(
-                        lambda syspath: os.path.join(
-                            syspath, "dffml.egg-link"
-                        ),
+                        lambda syspath: os.path.join(syspath, "dffml.egg-link"),
                         sys.path,
                     )
                 ),
@@ -41,10 +39,7 @@ if not (SELF_PATH / Path(IMPORT_NAME, "version.py")).is_file():
     SELF_PATH = os.path.dirname(os.path.realpath(__file__))
 
 VERSION = ast.literal_eval(
-    Path(SELF_PATH, IMPORT_NAME, "version.py")
-    .read_text()
-    .split("=")[-1]
-    .strip()
+    Path(SELF_PATH, IMPORT_NAME, "version.py").read_text().split("=")[-1].strip()
 )
 
 README = Path(SELF_PATH, "README.md").read_text()

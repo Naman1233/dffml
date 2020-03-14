@@ -41,9 +41,7 @@ class MiscSource(BaseSource):
 
     @classmethod
     def args(cls, args, *above) -> Dict[str, Arg]:
-        cls.config_set(
-            args, above, "keys", Arg(type=str, nargs="+", default=[])
-        )
+        cls.config_set(args, above, "keys", Arg(type=str, nargs="+", default=[]))
         return args
 
     @classmethod

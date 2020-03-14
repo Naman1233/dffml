@@ -52,9 +52,7 @@ class ScikitContext(ModelContext):
                 if k not in ["directory", "features", "tcluster", "predict"]
             ]
         )
-        return hashlib.sha384(
-            "".join([params] + self.features).encode()
-        ).hexdigest()
+        return hashlib.sha384("".join([params] + self.features).encode()).hexdigest()
 
     @property
     def _filepath(self):
@@ -118,15 +116,11 @@ class ScikitContext(ModelContext):
             predict = np.array(df)
             self.logger.debug(
                 "Predicted Value of {} for {}: {}".format(
-                    self.parent.config.predict,
-                    predict,
-                    self.clf.predict(predict),
+                    self.parent.config.predict, predict, self.clf.predict(predict),
                 )
             )
             target = self.parent.config.predict.NAME
-            record.predicted(
-                target, self.clf.predict(predict)[0], self.confidence
-            )
+            record.predicted(target, self.clf.predict(predict)[0], self.confidence)
             yield record
 
 
@@ -217,9 +211,7 @@ class ScikitContextUnsprvised(ScikitContext):
                 self.logger.critical(
                     "Predict found transductive clusterer, ensure data being passed is training data"
                 )
-                labels = [
-                    (yield label) for label in self.clf.labels_.astype(np.int)
-                ]
+                labels = [(yield label) for label in self.clf.labels_.astype(np.int)]
                 predictor = lambda predict: [next(labels)]
 
         async for record in records:
@@ -243,8 +235,7 @@ class Scikit(Model):
     @property
     def _filepath(self):
         return self.config.directory / (
-            hashlib.sha384(self.config.predict.NAME.encode()).hexdigest()
-            + ".json"
+            hashlib.sha384(self.config.predict.NAME.encode()).hexdigest() + ".json"
         )
 
     async def __aenter__(self) -> "Scikit":
@@ -265,9 +256,7 @@ class ScikitUnsprvised(Scikit):
                 (
                     "".join(
                         [model_name]
-                        + sorted(
-                            feature.NAME for feature in self.config.features
-                        )
+                        + sorted(feature.NAME for feature in self.config.features)
                     )
                 ).encode()
             ).hexdigest()

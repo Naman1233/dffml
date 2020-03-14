@@ -91,9 +91,7 @@ class SourcesContext(AsyncContextManagerListContext):
             record.merge(await source.record(key))
         return record
 
-    async def with_features(
-        self, features: List[str]
-    ) -> AsyncIterator[Record]:
+    async def with_features(self, features: List[str]) -> AsyncIterator[Record]:
         """
         Returns all records which have the requested features
         """
@@ -127,9 +125,7 @@ class ValidationSources(Sources):
 
     CONTEXT = ValidationSourcesContext
 
-    def __init__(
-        self, validation: Callable[[Record], bool], *args: BaseSource
-    ) -> None:
+    def __init__(self, validation: Callable[[Record], bool], *args: BaseSource) -> None:
         super().__init__(*args)
         self.validation = validation
 
@@ -139,9 +135,7 @@ class SubsetSources(ValidationSources):
     Restricts access to a subset of records during iteration based on their keys.
     """
 
-    def __init__(
-        self, *args: BaseSource, keys: Optional[List[str]] = None
-    ) -> None:
+    def __init__(self, *args: BaseSource, keys: Optional[List[str]] = None) -> None:
         super().__init__(self.__validation, *args)
         if keys is None:
             keys = []

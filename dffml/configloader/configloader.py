@@ -58,15 +58,11 @@ class BaseConfigLoader(BaseDataFlowFacilitatorObject):
             # TODO Get configs for loaders from somewhere, probably the
             # config of the multicomm
             loader_cls = cls.load(filetype)
-            loader = await exit_stack.enter_async_context(
-                loader_cls(BaseConfig())
-            )
+            loader = await exit_stack.enter_async_context(loader_cls(BaseConfig()))
             parsers[filetype] = await exit_stack.enter_async_context(loader())
         # The config will be stored by its unique filepath split on dirs
         config_path = list(
-            path.parts[len(base_dir.parts) :]
-            if base_dir is not None
-            else path.parts
+            path.parts[len(base_dir.parts) :] if base_dir is not None else path.parts
         )
         # Get rid of suffix for last member of path
         if config_path:

@@ -35,10 +35,7 @@ class TestDevelopCreate(AsyncTestCase):
         package_specific_files = list(
             map(
                 lambda filename: tuple(
-                    map(
-                        lambda x: x.replace("{import_name}", import_name),
-                        filename,
-                    )
+                    map(lambda x: x.replace("{import_name}", import_name), filename,)
                 ),
                 package_specific_files,
             )
@@ -64,9 +61,7 @@ class TestDevelopCreate(AsyncTestCase):
             ("tests", "__init__.py"),
         ] + package_specific_files:
             check = os.path.join(root, *filename)
-            self.assertTrue(
-                os.path.isfile(check), f"Not a file: {check}: {all_files}"
-            )
+            self.assertTrue(os.path.isfile(check), f"Not a file: {check}: {all_files}")
 
     async def generic_test(self, name, package_specific_files):
         package_name = "test-package"
@@ -96,9 +91,7 @@ class TestDevelopCreate(AsyncTestCase):
                         await cli.run()
                         # Verify that all went as planned
                         if target[::-1].startswith(("dot")[::-1]):
-                            self.verify(
-                                target, package_name, package_specific_files
-                            )
+                            self.verify(target, package_name, package_specific_files)
                         elif target[::-1].startswith(("within")[::-1]):
                             self.verify(
                                 os.path.join(target, package_name),
@@ -125,8 +118,7 @@ class TestDevelopCreate(AsyncTestCase):
 
     async def test_service(self):
         await self.generic_test(
-            "service",
-            [("{import_name}", "misc.py"), ("tests", "test_service.py")],
+            "service", [("{import_name}", "misc.py"), ("tests", "test_service.py")],
         )
 
 
@@ -140,8 +132,7 @@ class TestDevelopSkelLink(AsyncTestCase):
             self.skipTest("dffml not installed in development mode")
         await Develop.cli("skel", "link")
         common_files = [
-            path.relative_to(self.skel.common)
-            for path in self.skel.common_files()
+            path.relative_to(self.skel.common) for path in self.skel.common_files()
         ]
         # At time of writing there are 4 plugins in skel/ change this as needed
         plugins = self.skel.plugins()
@@ -150,8 +141,7 @@ class TestDevelopSkelLink(AsyncTestCase):
             for check in COMMON_FILES:
                 with chdir(plugin):
                     self.assertTrue(
-                        check.is_symlink(),
-                        f"{check.resolve()} is not a symlink",
+                        check.is_symlink(), f"{check.resolve()} is not a symlink",
                     )
 
 
@@ -186,9 +176,7 @@ class FakeProcess:
 
 
 def mkexec(proc_cls: Type[FakeProcess] = FakeProcess):
-    async def fake_create_subprocess_exec(
-        *args, stdin=None, stdout=None, stderr=None
-    ):
+    async def fake_create_subprocess_exec(*args, stdin=None, stdout=None, stderr=None):
         return proc_cls(cmd=args, stdout=stdout)
 
     return fake_create_subprocess_exec
@@ -227,8 +215,7 @@ class TestRelease(AsyncTestCase):
         ):
             await Develop.cli("release", ".")
         self.assertEqual(
-            stdout.getvalue().strip(),
-            f"Version {VERSION} of dffml already on PyPi",
+            stdout.getvalue().strip(), f"Version {VERSION} of dffml already on PyPi",
         )
 
     async def test_okay(self):

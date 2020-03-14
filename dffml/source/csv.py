@@ -70,9 +70,7 @@ class CSVSource(FileSource, MemorySource):
         async with self.OPEN_CSV_FILES_LOCK:
             if self.config.filename not in self.OPEN_CSV_FILES:
                 self.logger.debug(f"{self.config.filename} first open")
-                open_file = OpenCSVFile(
-                    active=1, lock=asyncio.Lock(), write_out={}
-                )
+                open_file = OpenCSVFile(active=1, lock=asyncio.Lock(), write_out={})
                 self.OPEN_CSV_FILES[self.config.filename] = open_file
                 if fd is not None:
                     await self.read_csv(fd, open_file)
@@ -117,11 +115,7 @@ class CSVSource(FileSource, MemorySource):
             # getting all keys starting with "prediction","confidence"
             for header in self.CSV_HEADERS:
                 row_keys.extend(
-                    list(
-                        filter(
-                            lambda x: x.startswith(header + "_"), row.keys()
-                        )
-                    )
+                    list(filter(lambda x: x.startswith(header + "_"), row.keys()))
                 )
             # pop all prediction data from row and save in csv_meta
             for header in row_keys:
@@ -142,12 +136,8 @@ class CSVSource(FileSource, MemorySource):
                 record_data["features"] = features
 
             # Getting all prediction target names
-            target_keys = filter(
-                lambda x: x.startswith("prediction_"), csv_meta.keys()
-            )
-            target_keys = map(
-                lambda x: x.replace("prediction_", ""), target_keys
-            )
+            target_keys = filter(lambda x: x.startswith("prediction_"), csv_meta.keys())
+            target_keys = map(lambda x: x.replace("prediction_", ""), target_keys)
 
             predictions = {
                 target_name: {
@@ -184,9 +174,7 @@ class CSVSource(FileSource, MemorySource):
             if not (await open_file.dec()):
                 return
             # Add our headers
-            fieldnames = (
-                [] if not open_file.write_back_key else [self.config.key]
-            )
+            fieldnames = [] if not open_file.write_back_key else [self.config.key]
             fieldnames.append(self.config.tagcol)
             # Get all the feature names
             feature_fieldnames = set()

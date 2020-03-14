@@ -50,9 +50,7 @@ async def add(numbers: List[int]):
 
 
 @op(
-    inputs={"numbers": numbers},
-    outputs={"product": result},
-    conditions=[is_mult],
+    inputs={"numbers": numbers}, outputs={"product": result}, conditions=[is_mult],
 )
 async def mult(numbers: List[int]):
     product = 1
@@ -96,9 +94,7 @@ class TestMemoryKeyValueStore(AsyncTestCase):
 
 class TestMemoryOperationImplementationNetwork(AsyncTestCase):
     async def setUp(self):
-        self.operationsNetwork = MemoryOperationImplementationNetwork.withconfig(
-            {}
-        )
+        self.operationsNetwork = MemoryOperationImplementationNetwork.withconfig({})
         self.operationsNetworkCtx = await self.operationsNetwork.__aenter__()
 
     async def tearDown(self):
@@ -119,10 +115,7 @@ class TestMemoryOperationImplementationNetwork(AsyncTestCase):
             # No input set context and input network context required to test
             # the add operation
             self.assertEqual(
-                42,
-                (await ctx.run(None, None, add.op, {"numbers": [40, 2]}))[
-                    "sum"
-                ],
+                42, (await ctx.run(None, None, add.op, {"numbers": [40, 2]}))["sum"],
             )
 
     async def test_not_instantiable(self):
@@ -148,9 +141,7 @@ class TestOrchestrator(AsyncTestCase):
         callstyles = {
             "dict": {
                 to_calc: [
-                    Input(
-                        value=to_calc, definition=parse_line.op.inputs["line"]
-                    ),
+                    Input(value=to_calc, definition=parse_line.op.inputs["line"]),
                     Input(
                         value=[add.op.outputs["sum"].name],
                         definition=GetSingle.op.inputs["spec"],
@@ -164,8 +155,7 @@ class TestOrchestrator(AsyncTestCase):
                         ctx=StringInputSetContext(to_calc),
                         inputs=[
                             Input(
-                                value=to_calc,
-                                definition=parse_line.op.inputs["line"],
+                                value=to_calc, definition=parse_line.op.inputs["line"],
                             ),
                             Input(
                                 value=[add.op.outputs["sum"].name],
@@ -178,9 +168,7 @@ class TestOrchestrator(AsyncTestCase):
             ],
             "uctx": [
                 [
-                    Input(
-                        value=to_calc, definition=parse_line.op.inputs["line"]
-                    ),
+                    Input(value=to_calc, definition=parse_line.op.inputs["line"]),
                     Input(
                         value=[add.op.outputs["sum"].name],
                         definition=GetSingle.op.inputs["spec"],
@@ -227,9 +215,7 @@ class MockIterEntryPoints(AsyncTestCase):
     async def setUp(self):
         self.exit_stack = ExitStack().__enter__()
         self.exit_stack.enter_context(
-            patch(
-                "pkg_resources.iter_entry_points", new=self.iter_entry_points
-            )
+            patch("pkg_resources.iter_entry_points", new=self.iter_entry_points)
         )
 
     async def tearDown(self):
@@ -238,11 +224,7 @@ class MockIterEntryPoints(AsyncTestCase):
 
 class TestOperation(MockIterEntryPoints):
     entrypoints = {
-        "dffml.operation": {
-            "add": add,
-            "mult": mult.op,
-            "parse_line": parse_line.imp,
-        }
+        "dffml.operation": {"add": add, "mult": mult.op, "parse_line": parse_line.imp,}
     }
 
     async def test_load(self):
@@ -252,9 +234,7 @@ class TestOperation(MockIterEntryPoints):
         try:
             self.assertIn(parse_line.op, loaded)
         except:
-            self.assertIn(
-                parse_line.op._replace(instance_name="parse_line"), loaded
-            )
+            self.assertIn(parse_line.op._replace(instance_name="parse_line"), loaded)
 
     async def test_load_name_given(self):
         self.assertEqual(add.op, Operation.load("add"))
@@ -276,20 +256,14 @@ class TestDataFlow(MockIterEntryPoints):
         self.assertIn("conditions", exported["operations"]["add"])
         self.assertIn("is_add", exported["operations"]["add"]["conditions"])
         self.assertIn("numbers", exported["operations"]["add"]["inputs"])
-        self.assertEqual(
-            "numbers", exported["operations"]["add"]["inputs"]["numbers"]
-        )
+        self.assertEqual("numbers", exported["operations"]["add"]["inputs"]["numbers"])
         self.assertIn("sum", exported["operations"]["add"]["outputs"])
-        self.assertEqual(
-            "result", exported["operations"]["add"]["outputs"]["sum"]
-        )
+        self.assertEqual("result", exported["operations"]["add"]["outputs"]["sum"])
         # Definitions
         self.assertIn("definitions", exported)
         self.assertIn("numbers", exported["definitions"])
         self.assertIn("primitive", exported["definitions"]["numbers"])
-        self.assertEqual(
-            "List[int]", exported["definitions"]["numbers"]["primitive"]
-        )
+        self.assertEqual("List[int]", exported["definitions"]["numbers"]["primitive"])
         self.assertIn("result", exported["definitions"])
         self.assertIn("primitive", exported["definitions"]["result"])
         self.assertEqual("int", exported["definitions"]["result"]["primitive"])
@@ -297,9 +271,7 @@ class TestDataFlow(MockIterEntryPoints):
     def test_resolve_missing_condition_definition(self):
         exported = DataFlow.auto(add).export(linked=True)
         del exported["definitions"]["is_add"]
-        with self.assertRaisesRegex(
-            DefinitionMissing, "add.conditions.*is_add"
-        ):
+        with self.assertRaisesRegex(DefinitionMissing, "add.conditions.*is_add"):
             DataFlow._fromdict(**exported)
 
     def test_resolve_missing_input_output_definition(self):
@@ -311,11 +283,7 @@ class TestDataFlow(MockIterEntryPoints):
 
 class TestOperationImplementation(MockIterEntryPoints):
     entrypoints = {
-        "dffml.operation": {
-            "add": add,
-            "mult": mult.imp,
-            "parse_line": parse_line.op,
-        }
+        "dffml.operation": {"add": add, "mult": mult.imp, "parse_line": parse_line.op,}
     }
 
     async def test_load(self):

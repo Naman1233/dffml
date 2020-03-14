@@ -211,9 +211,7 @@ class SQLDatabaseContext(BaseDatabaseContext):
 
         return query, query_values
 
-    def remove_query(
-        self, table_name: str, conditions: Optional[Conditions] = None
-    ):
+    def remove_query(self, table_name: str, conditions: Optional[Conditions] = None):
         """
         Creates a delete query to remove rows from ``table_name`` (satisfying
         ``conditions`` if provided).
